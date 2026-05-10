@@ -1,0 +1,13 @@
+﻿# Credenciais e dados sensíveis
+*.env
+.env*
+secrets/
+credentials/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# IDE
+.vscode/
+.idea/
