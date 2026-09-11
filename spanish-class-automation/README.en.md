@@ -26,46 +26,9 @@ Four n8n workflows generate the week's exercises with AI from the latest lesson,
 
 ## Architecture
 
-```mermaid
-flowchart LR
-  subgraph DRIVE["Google Drive"]
-    AULA["Latest lesson material"]
-    CRIT["Teaching criteria"]
-    TEMAS["Topics from other teachers"]
-    VOC["Cumulative vocabulary"]
-  end
-  WF1(["1 · Generate week<br/>Saturday 6am"]):::wf
-  SHEET[("Google Sheets<br/>exercicios · config · respostas")]:::data
-  PROF["Teacher WhatsApp<br/>weekly preview"]:::msg
-  WF2(["2 · Send exercise<br/>Mon–Fri 9am"]):::wf
-  WF3(["3 · Audio script<br/>Wednesday 8pm"]):::wf
-  WF4(["4 · Log answers<br/>webhook"]):::wf
-  PAGES["GitHub Pages<br/>challenge page"]:::data
-  EL["ElevenLabs<br/>Spanish audio"]:::ai
-  GPT["OpenAI gpt-4o<br/>9 exercises as JSON"]:::ai
-  GRUPO["Class WhatsApp<br/>group"]:::msg
+![Pipeline architecture](docs/diagramas/arquitetura-en.png)
 
-  AULA & CRIT & TEMAS & VOC --> WF1
-  WF1 <--> GPT
-  WF1 -->|status draft| SHEET
-  WF1 --> PROF
-  PROF -.->|teacher approves| SHEET
-  SHEET -->|approved row of the day| WF2
-  WF2 -->|Tuesday: publishes HTML| PAGES
-  WF2 <-->|Wednesday| EL
-  WF2 -->|text, audio or link| GRUPO
-  WF2 -->|status sent| SHEET
-  GRUPO -.->|student opens the link| PAGES
-  PAGES -->|anonymous answer| WF4
-  WF4 -->|answers tab| SHEET
-  SHEET -->|Wednesday script| WF3
-  WF3 --> GRUPO
-
-  classDef wf fill:#e8f1ff,stroke:#3b6fd8,color:#1b2b4a
-  classDef ai fill:#f3e8ff,stroke:#8a4fd8,color:#2e1a47
-  classDef msg fill:#e7f7ec,stroke:#2f9a57,color:#12331f
-  classDef data fill:#fff5e0,stroke:#d49a1f,color:#3d2c08
-```
+<sub>Editable diagram source: [`docs/diagramas/arquitetura-en.mmd`](docs/diagramas/arquitetura-en.mmd)</sub>
 
 **n8n canvas**
 

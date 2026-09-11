@@ -1,0 +1,51 @@
+flowchart LR
+  n0["Wait<br/><small>Wait</small>"]:::logic
+  n1(["Telegram Trigger<br/><small>Telegram Trigger</small>"]):::trigger
+  n2["Structured Output Parser<br/><small>Structured Output Parser</small>"]:::ai
+  n3["Send a photo message<br/><small>Telegram</small>"]:::msg
+  n4["Structured Output Parser1<br/><small>Structured Output Parser</small>"]:::ai
+  n5["Wait1<br/><small>Wait</small>"]:::logic
+  n6["Send a video<br/><small>Telegram</small>"]:::msg
+  n7["Get Photo from Telegram<br/><small>Telegram</small>"]:::msg
+  n8{"If3<br/><small>IF</small>"}:::logic
+  n9{"If1<br/><small>IF</small>"}:::logic
+  n10["AI Agent<br/><small>AI Agent</small>"]:::ai
+  n11["AI Video Generator<br/><small>AI Agent</small>"]:::ai
+  n12["Analyze image<br/><small>OpenAI</small>"]:::ai
+  n13["OpenAI Chat Model<br/><small>OpenAI Chat Model</small>"]:::ai
+  n14["Fal AI - Get Image<br/><small>HTTP · Fal.ai API</small>"]:::data
+  n15["Fal AI - SeeDream<br/><small>HTTP · Fal.ai API</small>"]:::data
+  n16["Fal AI - Check Status2<br/><small>HTTP · Fal.ai API</small>"]:::data
+  n17["Fal AI - Vídeo na praia1<br/><small>HTTP · Fal.ai API</small>"]:::data
+  n18["Fal AI - Check Status<br/><small>HTTP · Fal.ai API</small>"]:::data
+  n19["Fal AI - Veo<br/><small>HTTP · Fal.ai API</small>"]:::data
+  n20["Upload to Fal.ai Storage<br/><small>HTTP · Fal.ai API</small>"]:::data
+  n21{"If - Solo Imagen<br/><small>IF</small>"}:::logic
+  n1 --> n7
+  n16 --> n8
+  n8 -->|true| n14
+  n8 -->|false| n0
+  n12 --> n10
+  n13 -.->|model| n10
+  n13 -.->|model| n11
+  n2 -.->|parser| n10
+  n10 --> n15
+  n14 --> n3
+  n4 -.->|parser| n11
+  n5 --> n18
+  n9 -->|true| n5
+  n9 -->|false| n17
+  n17 --> n6
+  n18 --> n9
+  n19 --> n5
+  n11 --> n19
+  n0 --> n16
+  n7 --> n20
+  n20 --> n12
+  n3 --> n21
+  n21 -->|false| n11
+  classDef trigger fill:#e8f1ff,stroke:#3b6fd8,color:#1b2b4a
+  classDef ai fill:#f3e8ff,stroke:#8a4fd8,color:#2e1a47
+  classDef logic fill:#f4f4f4,stroke:#8a8a8a,color:#222
+  classDef msg fill:#e7f7ec,stroke:#2f9a57,color:#12331f
+  classDef data fill:#fff5e0,stroke:#d49a1f,color:#3d2c08

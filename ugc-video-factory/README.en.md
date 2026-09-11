@@ -18,24 +18,9 @@ A Telegram bot where the user sends a photo and an instruction in the caption; t
 
 ## Architecture
 
-```mermaid
-flowchart LR
-  U(["Photo + caption<br/>on Telegram"]):::wf --> S["Fal.ai storage<br/>image URL"]:::data
-  S --> V["GPT-5.4 vision<br/>product or character · brand · palette"]:::ai
-  V --> A1["Scene agent<br/>UGC frame prompt"]:::ai
-  A1 --> SD["SeeDream 4.5 edit<br/>first frame"]:::ai
-  SD --> P1{"polling<br/>COMPLETED?"}
-  P1 -->|yes| IMG["Image on Telegram"]:::msg
-  IMG --> Q{"caption asks for<br/>image only?"}
-  Q -->|no| A2["Video agent<br/>scene + PT-BR line"]:::ai
-  A2 --> VEO["Veo 3.1 Fast<br/>8 s · 9:16 · with audio"]:::ai
-  VEO --> P2{"polling"}
-  P2 -->|ready| OUT["Video on Telegram"]:::msg
-  classDef wf fill:#e8f1ff,stroke:#3b6fd8,color:#1b2b4a
-  classDef ai fill:#f3e8ff,stroke:#8a4fd8,color:#2e1a47
-  classDef msg fill:#e7f7ec,stroke:#2f9a57,color:#12331f
-  classDef data fill:#fff5e0,stroke:#d49a1f,color:#3d2c08
-```
+![Pipeline architecture](docs/diagramas/arquitetura-en.png)
+
+<sub>Editable diagram source: [`docs/diagramas/arquitetura-en.mmd`](docs/diagramas/arquitetura-en.mmd)</sub>
 
 **n8n canvas**
 

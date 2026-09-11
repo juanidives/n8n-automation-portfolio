@@ -18,24 +18,9 @@ Um bot de Telegram em que a pessoa envia a foto e uma instrução na legenda; o 
 
 ## Arquitetura
 
-```mermaid
-flowchart LR
-  U(["Foto + legenda<br/>no Telegram"]):::wf --> S["Fal.ai storage<br/>URL da imagem"]:::data
-  S --> V["GPT-5.4 vision<br/>produto ou personagem · marca · paleta"]:::ai
-  V --> A1["Agente de cena<br/>prompt do frame UGC"]:::ai
-  A1 --> SD["SeeDream 4.5 edit<br/>frame inicial"]:::ai
-  SD --> P1{"polling<br/>COMPLETED?"}
-  P1 -->|sim| IMG["Imagem no Telegram"]:::msg
-  IMG --> Q{"legenda pede<br/>só imagem?"}
-  Q -->|não| A2["Agente de vídeo<br/>cena + fala em PT-BR"]:::ai
-  A2 --> VEO["Veo 3.1 Fast<br/>8 s · 9:16 · com áudio"]:::ai
-  VEO --> P2{"polling"}
-  P2 -->|pronto| OUT["Vídeo no Telegram"]:::msg
-  classDef wf fill:#e8f1ff,stroke:#3b6fd8,color:#1b2b4a
-  classDef ai fill:#f3e8ff,stroke:#8a4fd8,color:#2e1a47
-  classDef msg fill:#e7f7ec,stroke:#2f9a57,color:#12331f
-  classDef data fill:#fff5e0,stroke:#d49a1f,color:#3d2c08
-```
+![Arquitetura do pipeline](docs/diagramas/arquitetura-pt.png)
+
+<sub>Fonte editável do diagrama: [`docs/diagramas/arquitetura-pt.mmd`](docs/diagramas/arquitetura-pt.mmd)</sub>
 
 **Canvas no n8n**
 
