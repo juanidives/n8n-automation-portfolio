@@ -120,4 +120,4 @@ Tip: publish your Google Cloud OAuth app in **Production** mode. The refresh tok
 
 ---
 
-Part of the [n8n Automation Portfolio](../README.en.md) · Juan Antonio Morales · [LinkedIn](https://www.linkedin.com/in/juanantoniomorales) · License [MIT](../LICENSE)
+Part of the [n8n Automation Portfolio](../README.en.md) · Juan Antonio Morales, Data Project Manager · [LinkedIn](https://www.linkedin.com/in/juanantoniomorales) · License [MIT](../LICENSE)

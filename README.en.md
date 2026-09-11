@@ -21,7 +21,7 @@
 
 This is my portfolio of automations built on **self-hosted n8n**. Each folder is a complete case: the business problem, the one-sentence solution, the architecture, the integrations, the result and the workflow ready to import.
 
-I bring 14 years of BI and data project management to automation: I start from the process and the data, design the flow with clear control points, and document every decision so someone else can operate, audit and evolve the solution.
+As a Data Project Manager, I bring to automation the same lens I used leading Data & Analytics in multi-market environments: I start from the process and the data, design the flow with clear control points, and document every decision so someone else can operate, audit and evolve the solution.
 
 ---
 
@@ -148,9 +148,12 @@ Released under the [MIT](LICENSE) license: use, adapt and distribute freely, kee
 
 ## 👤 Author
 
-**Juan Antonio Morales** · PM & Lead BI · Data & Analytics · AI Automation
+**Juan Antonio Morales**  
+Data Project Manager | Data & Analytics · BI · Portfolio Management | Squad Leadership & LATAM Rollout | Databricks · Power BI · Generative AI
 
-14 years in Data & Analytics at Arcos Dorados (McDonald's LATAM), leading BI and data projects at regional scale, including P&L automation for 12 markets on Databricks with a 63% reduction in manual processes. Today I build AI agents and automations running in production at [Kailor](https://kailor.com.br).
+I led the Data & Analytics agenda for Arcos Dorados' (McDonald's) Latin American operations, heading cross-functional squads across C-level sponsored programs with rollout in up to 12 markets. Highlights include the Segment P&L across 12 markets, cutting manual processes by 63%, and the Meu Méqui loyalty program, from pilot to rollout across 11 markets.
+
+Today I apply the same logic to Generative AI, building AI agents and automations that run in production at [Kailor](https://kailor.com.br), while pursuing an MBA in Project Management at FGV.
 
 [![LinkedIn](https://img.shields.io/badge/LinkedIn-0A66C2?style=flat-square&logo=linkedin&logoColor=white)](https://www.linkedin.com/in/juanantoniomorales)
 [![GitHub](https://img.shields.io/badge/GitHub-juanidives-181717?style=flat-square&logo=github)](https://github.com/juanidives)

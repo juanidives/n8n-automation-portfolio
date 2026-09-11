@@ -83,4 +83,4 @@ Dica para produção: adicione um IF logo após o Telegram Trigger liberando ape
 
 ---
 
-Parte do [n8n Automation Portfolio](../README.md) · Juan Antonio Morales · [LinkedIn](https://www.linkedin.com/in/juanantoniomorales) · Licença [MIT](../LICENSE)
+Parte do [n8n Automation Portfolio](../README.md) · Juan Antonio Morales, Gerente de Projetos de Dados · [LinkedIn](https://www.linkedin.com/in/juanantoniomorales) · Licença [MIT](../LICENSE)

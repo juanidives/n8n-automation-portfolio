@@ -21,7 +21,7 @@
 
 Este é o meu portfólio de automações em **n8n self-hosted**. Cada pasta é um case completo: o problema de negócio, a solução em uma frase, a arquitetura, as integrações, o resultado e o workflow pronto para importar.
 
-Venho de 14 anos em BI e gestão de projetos de dados, e trago essa lente para a automação: começo pelo processo e pelo dado, desenho o fluxo com pontos de controle claros e documento cada decisão para que outra pessoa consiga operar, auditar e evoluir a solução.
+Como Gerente de Projetos de Dados, trago para a automação a mesma lente que usei liderando Data & Analytics em ambientes multimercado: começo pelo processo e pelo dado, desenho o fluxo com pontos de controle claros e documento cada decisão para que outra pessoa consiga operar, auditar e evoluir a solução.
 
 ---
 
@@ -148,9 +148,12 @@ Distribuído sob a licença [MIT](LICENSE): use, adapte e distribua livremente, 
 
 ## 👤 Autor
 
-**Juan Antonio Morales** · PM & Lead BI · Data & Analytics · AI Automation
+**Juan Antonio Morales**  
+Gerente de Projetos de Dados | Data & Analytics · BI · Gestão de Portfólio | Liderança de Squads e Rollout LATAM | Databricks · Power BI · IA Generativa
 
-14 anos em Data & Analytics na Arcos Dorados (McDonald's LATAM), liderando BI e projetos de dados em escala regional, incluindo a automação do P&L de 12 mercados no Databricks com redução de 63% nos processos manuais. Hoje construo agentes e automações de IA em produção pela [Kailor](https://kailor.com.br).
+Liderei a agenda de Data & Analytics das operações da América Latina na Arcos Dorados (McDonald's), à frente de squads multidisciplinares, em programas patrocinados por C-level e com rollout em até 12 mercados. Entre os destaques: o P&L por Segmentos em 12 mercados, com redução de 63% nos processos manuais, e o programa de fidelidade Meu Méqui, do piloto ao rollout em 11 mercados.
+
+Hoje aplico a mesma lógica à IA Generativa, construindo agentes e automações que rodam em produção pela [Kailor](https://kailor.com.br), enquanto curso o MBA em Gerenciamento de Projetos na FGV.
 
 [![LinkedIn](https://img.shields.io/badge/LinkedIn-0A66C2?style=flat-square&logo=linkedin&logoColor=white)](https://www.linkedin.com/in/juanantoniomorales)
 [![GitHub](https://img.shields.io/badge/GitHub-juanidives-181717?style=flat-square&logo=github)](https://github.com/juanidives)

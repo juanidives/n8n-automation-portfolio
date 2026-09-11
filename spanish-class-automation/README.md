@@ -120,4 +120,4 @@ Dica: publique o app OAuth do Google Cloud em modo **Produção**. Assim o refre
 
 ---
 
-Parte do [n8n Automation Portfolio](../README.md) · Juan Antonio Morales · [LinkedIn](https://www.linkedin.com/in/juanantoniomorales) · Licença [MIT](../LICENSE)
+Parte do [n8n Automation Portfolio](../README.md) · Juan Antonio Morales, Gerente de Projetos de Dados · [LinkedIn](https://www.linkedin.com/in/juanantoniomorales) · Licença [MIT](../LICENSE)
