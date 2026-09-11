@@ -4,7 +4,7 @@
 
 > Pipeline n8n que transforma o material da aula da semana em 9 exercícios gerados por IA, passa pela aprovação do professor em uma planilha e entrega um exercício por dia no grupo de WhatsApp da turma, com enquete interativa, áudio narrado e registro anônimo das respostas.
 
-`n8n` `OpenAI gpt-4o` `Google Sheets` `Google Drive` `WhatsApp (Evolution API)` `ElevenLabs` `GitHub Pages`
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](../LICENSE) ![n8n](https://img.shields.io/badge/n8n-2.x-051221?style=flat&logo=n8n) ![OpenAI](https://img.shields.io/badge/OpenAI-gpt--4o-051221?style=flat&logo=openai) ![Google Sheets](https://img.shields.io/badge/Google_Sheets-051221?style=flat&logo=googlesheets) ![Google Drive](https://img.shields.io/badge/Google_Drive-051221?style=flat&logo=googledrive) ![WhatsApp](https://img.shields.io/badge/WhatsApp-Evolution_API-051221?style=flat&logo=whatsapp) ![ElevenLabs](https://img.shields.io/badge/ElevenLabs-051221?style=flat&logo=elevenlabs) ![GitHub Pages](https://img.shields.io/badge/GitHub_Pages-051221?style=flat&logo=githubpages)
 
 ---
 
@@ -120,4 +120,4 @@ Dica: publique o app OAuth do Google Cloud em modo **Produção**. Assim o refre
 
 ---
 
-Parte do [n8n Automation Portfolio](../README.md) · Juan Antonio Morales · [LinkedIn](https://www.linkedin.com/in/juanantoniomorales)
+Parte do [n8n Automation Portfolio](../README.md) · Juan Antonio Morales · [LinkedIn](https://www.linkedin.com/in/juanantoniomorales) · Licença [MIT](../LICENSE)

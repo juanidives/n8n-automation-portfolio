@@ -1,30 +1,163 @@
-# n8n Automation Portfolio
+<p align="center">
+  <img src="assets/banner-en.svg" alt="n8n Automation Portfolio — AI automations documented as business cases" width="100%"/>
+</p>
 
-[Português](README.md) · **English**
+<p align="center">
+  <a href="LICENSE"><img src="https://img.shields.io/badge/License-MIT-yellow.svg" alt="License: MIT"/></a>
+  <img src="https://img.shields.io/badge/n8n-2.x_self--hosted-051221?style=flat&logo=n8n&logoColor=EA4B71" alt="n8n 2.x self-hosted"/>
+  <img src="https://img.shields.io/badge/cases-2-051221?style=flat" alt="2 cases"/>
+  <img src="https://img.shields.io/badge/workflows-5-051221?style=flat" alt="5 workflows"/>
+  <img src="https://img.shields.io/badge/nodes-61-051221?style=flat" alt="61 nodes"/>
+  <img src="https://img.shields.io/badge/docs-PT_%7C_EN-051221?style=flat" alt="Docs PT | EN"/>
+</p>
 
-Automations built on self-hosted n8n by **Juan Antonio Morales**, a Data & Analytics professional with 14 years in BI and data project management. Each project is documented as a case: the business problem, the solution, the architecture, the integrations and the result, with the workflow ready to import.
+<p align="center">
+  <a href="README.md">Português</a> · <b>English</b>
+</p>
 
-## Projects
+---
 
-| Project | Problem it solves | Stack | Workflows |
-|---|---|---|---|
-| [**Daily Exercise Automation · Spanish A1**](spanish-class-automation/README.en.md) | Daily language practice between weekly lessons, with AI generating the content and the teacher approving it in a spreadsheet | gpt-4o · Google Sheets · Google Drive · WhatsApp · ElevenLabs · GitHub Pages | 4 |
-| [**UGC Video Factory**](ugc-video-factory/README.en.md) | A short UGC-style video from a single photo sent on Telegram | GPT-5.4 vision · AI Agents · Fal.ai · SeeDream 4.5 · Veo 3.1 · Telegram | 1 |
+## 👋 About this repository
 
-## Project layout
+This is my portfolio of automations built on **self-hosted n8n**. Each folder is a complete case: the business problem, the one-sentence solution, the architecture, the integrations, the result and the workflow ready to import.
+
+I bring 14 years of BI and data project management to automation: I start from the process and the data, design the flow with clear control points, and document every decision so someone else can operate, audit and evolve the solution.
+
+---
+
+## 🚀 Cases
+
+<table>
+  <tr>
+    <td width="50%" valign="top">
+      <a href="spanish-class-automation/README.en.md">
+        <img src="spanish-class-automation/docs/canvas-2-enviar-exercicio.png" alt="n8n canvas of the daily exercise sender"/>
+      </a>
+      <h3>📚 Daily Exercises · Spanish A1</h3>
+      <p>From the week's lesson to 9 AI-generated exercises, approved by the teacher in a spreadsheet and delivered one per day to the class WhatsApp group, with a web challenge, narrated audio and anonymous answer logging.</p>
+      <p><b>4 workflows · 39 nodes · in use since Aug 2026</b></p>
+      <p>
+        <img src="https://img.shields.io/badge/OpenAI-gpt--4o-051221?style=flat&logo=openai" alt="OpenAI"/>
+        <img src="https://img.shields.io/badge/Google_Sheets-051221?style=flat&logo=googlesheets" alt="Google Sheets"/>
+        <img src="https://img.shields.io/badge/WhatsApp-051221?style=flat&logo=whatsapp" alt="WhatsApp"/>
+        <img src="https://img.shields.io/badge/ElevenLabs-051221?style=flat&logo=elevenlabs" alt="ElevenLabs"/>
+        <img src="https://img.shields.io/badge/GitHub_Pages-051221?style=flat&logo=githubpages" alt="GitHub Pages"/>
+      </p>
+      <p><a href="spanish-class-automation/README.en.md"><b>Read the case →</b></a> &nbsp;·&nbsp; <a href="spanish-class-automation/README.md">Português</a> &nbsp;·&nbsp; <a href="spanish-class-automation/workflows/">JSON</a></p>
+    </td>
+    <td width="50%" valign="top">
+      <a href="ugc-video-factory/README.en.md">
+        <img src="ugc-video-factory/docs/canvas-ugc-factory-hub.png" alt="n8n canvas of UGC Video Factory"/>
+      </a>
+      <h3>🎬 UGC Video Factory</h3>
+      <p>A photo and a caption on Telegram become an 8-second vertical UGC-style video with a spoken line in Portuguese: visual analysis, prompt agents, and image and video generation through async queues.</p>
+      <p><b>1 workflow · 22 nodes · training project</b></p>
+      <p>
+        <img src="https://img.shields.io/badge/OpenAI-GPT--5.4_vision-051221?style=flat&logo=openai" alt="OpenAI"/>
+        <img src="https://img.shields.io/badge/AI_Agents-051221?style=flat" alt="AI Agents"/>
+        <img src="https://img.shields.io/badge/Fal.ai-SeeDream_%C2%B7_Veo_3.1-051221?style=flat" alt="Fal.ai"/>
+        <img src="https://img.shields.io/badge/Telegram-051221?style=flat&logo=telegram" alt="Telegram"/>
+      </p>
+      <p><a href="ugc-video-factory/README.en.md"><b>Read the case →</b></a> &nbsp;·&nbsp; <a href="ugc-video-factory/README.md">Português</a> &nbsp;·&nbsp; <a href="ugc-video-factory/workflows/">JSON</a></p>
+    </td>
+  </tr>
+</table>
+
+---
+
+## 🧭 What these cases demonstrate
+
+| Skill | Where it shows |
+|---|---|
+| **Human-in-the-loop AI** | AI generates the week and the teacher approves it in the spreadsheet; delivery picks up only approved rows · *Spanish* |
+| **Prompt engineering** | Explicit rules, counter-examples, JSON output and Structured Output Parser · *Spanish, UGC* |
+| **Multimodal orchestration** | Vision, text, image, video and audio in the same flow · *UGC, Spanish* |
+| **API integration** | Google Drive and Sheets, WhatsApp, Telegram, GitHub, ElevenLabs and Fal.ai · *both* |
+| **Async patterns** | Queue → status check → fetch result, with controlled waits · *UGC, Spanish* |
+| **Privacy-aware data** | Anonymous answers become a per-question, per-week accuracy base · *Spanish* |
+| **Operations** | Retries, explicit timezone, a global pause switch and WhatsApp error alerts · *Spanish* |
+| **Governance and documentation** | Sanitized JSON, sanitization log, diagrams generated from the connections · *both* |
+
+---
+
+## 🛠️ Stack
+
+[![n8n](https://img.shields.io/badge/n8n-051221?style=flat&logo=n8n)](https://n8n.io)
+[![OpenAI](https://img.shields.io/badge/OpenAI-051221?style=flat&logo=openai)](https://openai.com)
+[![Google Sheets](https://img.shields.io/badge/Google_Sheets-051221?style=flat&logo=googlesheets)](https://workspace.google.com/products/sheets/)
+[![Google Drive](https://img.shields.io/badge/Google_Drive-051221?style=flat&logo=googledrive)](https://workspace.google.com/products/drive/)
+[![WhatsApp](https://img.shields.io/badge/WhatsApp_%28Evolution_API%29-051221?style=flat&logo=whatsapp)](https://github.com/EvolutionAPI/evolution-api)
+[![Telegram](https://img.shields.io/badge/Telegram-051221?style=flat&logo=telegram)](https://core.telegram.org/bots)
+[![ElevenLabs](https://img.shields.io/badge/ElevenLabs-051221?style=flat&logo=elevenlabs)](https://elevenlabs.io)
+[![Fal.ai](https://img.shields.io/badge/Fal.ai-051221?style=flat)](https://fal.ai)
+[![GitHub Pages](https://img.shields.io/badge/GitHub_Pages-051221?style=flat&logo=githubpages)](https://pages.github.com)
+[![JavaScript](https://img.shields.io/badge/JavaScript-051221?style=flat&logo=javascript)](https://developer.mozilla.org/docs/Web/JavaScript)
+[![Mermaid](https://img.shields.io/badge/Mermaid-051221?style=flat&logo=mermaid)](https://mermaid.js.org)
+
+---
+
+## 🗂️ Structure
 
 ```
-<project>/
-├── README.md          ← case in Portuguese
-├── README.en.md       ← case in English
-├── workflows/         ← sanitized JSON, ready to import into n8n
-└── docs/              ← Mermaid diagrams and canvas screenshots
+n8n-automation-portfolio/
+├── README.md · README.en.md        ← this showcase
+├── LICENSE                         ← MIT
+├── assets/                         ← repository banner
+│
+├── spanish-class-automation/       ← one case per folder
+│   ├── README.md · README.en.md    ← full case in PT and EN
+│   ├── workflows/                  ← sanitized JSON, ready to import
+│   └── docs/
+│       ├── canvas-*.png            ← n8n canvas screenshots
+│       ├── diagramas/              ← Mermaid diagrams (.mmd + .png)
+│       └── diagramas-workflows.md  ← node-level diagram of each workflow
+│
+└── ugc-video-factory/              ← same structure
 ```
 
-- **Sanitization:** generic credential names, instance IDs removed and `YOUR_…` placeholders for domains, webhooks, spreadsheets and phone numbers.
-- **Diagrams:** generated from each JSON's `connections` block, so they mirror the workflow exactly.
-- **Import:** each README lists credentials, placeholders and activation order.
+---
 
-## Contact
+## ⚡ How to import a workflow
 
-[LinkedIn](https://www.linkedin.com/in/juanantoniomorales) · [GitHub](https://github.com/juanidives)
+1. In n8n, open **Workflows → Import from File** and pick the JSON from the case's `workflows/` folder.
+2. Create the credentials listed in the case README and select each one in the matching nodes.
+3. Replace the `YOUR_…` placeholders with your own values (spreadsheet, domain, phone number, repository).
+4. Activate the workflow.
+
+Each case README lists every credential, placeholder, community node and the activation order.
+
+---
+
+## 🔒 Publishing standard
+
+Every workflow goes through the same treatment before it lands here:
+
+- **Credentials** with generic names and placeholder IDs, ready for you to attach your own.
+- **Instance identifiers** removed: `id`, `versionId`, `meta.instanceId`, `pinData` and error workflow.
+- **`YOUR_…` placeholders** for domain, webhook paths, spreadsheet and Drive IDs, phone numbers and repositories.
+- **Regenerated webhookIds**, so each import creates its own URLs.
+- **Diagrams generated from the JSON `connections` block**, so they mirror the workflow exactly.
+
+---
+
+## 📄 License
+
+Released under the [MIT](LICENSE) license: use, adapt and distribute freely, keeping the copyright notice.
+
+---
+
+## 👤 Author
+
+**Juan Antonio Morales** · PM & Lead BI · Data & Analytics · AI Automation
+
+14 years in Data & Analytics at Arcos Dorados (McDonald's LATAM), leading BI and data projects at regional scale, including P&L automation for 12 markets on Databricks with a 63% reduction in manual processes. Today I build AI agents and automations running in production at [Kailor](https://kailor.com.br).
+
+[![LinkedIn](https://img.shields.io/badge/LinkedIn-0A66C2?style=flat-square&logo=linkedin&logoColor=white)](https://www.linkedin.com/in/juanantoniomorales)
+[![GitHub](https://img.shields.io/badge/GitHub-juanidives-181717?style=flat-square&logo=github)](https://github.com/juanidives)
+[![Email](https://img.shields.io/badge/Email-D14836?style=flat-square&logo=gmail&logoColor=white)](mailto:juan.morales@outlook.com.br)
+
+---
+
+<p align="center">
+  <sub>Built in São Paulo with n8n, data and curiosity · Argentina and Brazil always at heart</sub>
+</p>

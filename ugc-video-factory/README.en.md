@@ -4,7 +4,7 @@
 
 > An n8n workflow that receives a product or character photo on Telegram, builds the scene with AI and returns, in the same chat, an 8-second vertical UGC-style video with a spoken line in Portuguese.
 
-`n8n` `Telegram` `OpenAI GPT-5.4 (vision)` `AI Agents` `Fal.ai` `SeeDream 4.5` `Veo 3.1`
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](../LICENSE) ![n8n](https://img.shields.io/badge/n8n-2.x-051221?style=flat&logo=n8n) ![Telegram](https://img.shields.io/badge/Telegram-051221?style=flat&logo=telegram) ![OpenAI](https://img.shields.io/badge/OpenAI-GPT--5.4_vision-051221?style=flat&logo=openai) ![AI Agents](https://img.shields.io/badge/AI_Agents-051221?style=flat) ![Fal.ai](https://img.shields.io/badge/Fal.ai-SeeDream_4.5-051221?style=flat) ![Fal.ai](https://img.shields.io/badge/Fal.ai-Veo_3.1-051221?style=flat)
 
 ---
 
@@ -83,4 +83,4 @@ Production tip: add an IF right after the Telegram Trigger that allows only auth
 
 ---
 
-Part of the [n8n Automation Portfolio](../README.en.md) · Juan Antonio Morales · [LinkedIn](https://www.linkedin.com/in/juanantoniomorales)
+Part of the [n8n Automation Portfolio](../README.en.md) · Juan Antonio Morales · [LinkedIn](https://www.linkedin.com/in/juanantoniomorales) · License [MIT](../LICENSE)

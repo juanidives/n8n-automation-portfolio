@@ -4,7 +4,7 @@
 
 > Workflow n8n que recebe a foto de um produto ou personagem no Telegram, cria a cena com IA e devolve no mesmo chat um vídeo vertical de 8 segundos no estilo UGC, com fala em português.
 
-`n8n` `Telegram` `OpenAI GPT-5.4 (vision)` `AI Agents` `Fal.ai` `SeeDream 4.5` `Veo 3.1`
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](../LICENSE) ![n8n](https://img.shields.io/badge/n8n-2.x-051221?style=flat&logo=n8n) ![Telegram](https://img.shields.io/badge/Telegram-051221?style=flat&logo=telegram) ![OpenAI](https://img.shields.io/badge/OpenAI-GPT--5.4_vision-051221?style=flat&logo=openai) ![AI Agents](https://img.shields.io/badge/AI_Agents-051221?style=flat) ![Fal.ai](https://img.shields.io/badge/Fal.ai-SeeDream_4.5-051221?style=flat) ![Fal.ai](https://img.shields.io/badge/Fal.ai-Veo_3.1-051221?style=flat)
 
 ---
 
@@ -83,4 +83,4 @@ Dica para produção: adicione um IF logo após o Telegram Trigger liberando ape
 
 ---
 
-Parte do [n8n Automation Portfolio](../README.md) · Juan Antonio Morales · [LinkedIn](https://www.linkedin.com/in/juanantoniomorales)
+Parte do [n8n Automation Portfolio](../README.md) · Juan Antonio Morales · [LinkedIn](https://www.linkedin.com/in/juanantoniomorales) · Licença [MIT](../LICENSE)
