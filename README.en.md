@@ -151,10 +151,6 @@ Released under the [MIT](LICENSE) license: use, adapt and distribute freely, kee
 **Juan Antonio Morales**  
 Data Project Manager | Data & Analytics · BI · Portfolio Management | Squad Leadership & LATAM Rollout | Databricks · Power BI · Generative AI
 
-I led the Data & Analytics agenda for Arcos Dorados' (McDonald's) Latin American operations, heading cross-functional squads across C-level sponsored programs with rollout in up to 12 markets. Highlights include the Segment P&L across 12 markets, cutting manual processes by 63%, and the Meu Méqui loyalty program, from pilot to rollout across 11 markets.
-
-Today I apply the same logic to Generative AI, building AI agents and automations that run in production at [Kailor](https://kailor.com.br), while pursuing an MBA in Project Management at FGV.
-
 [![LinkedIn](https://img.shields.io/badge/LinkedIn-0A66C2?style=flat-square&logo=linkedin&logoColor=white)](https://www.linkedin.com/in/juanantoniomorales)
 [![GitHub](https://img.shields.io/badge/GitHub-juanidives-181717?style=flat-square&logo=github)](https://github.com/juanidives)
 [![Email](https://img.shields.io/badge/Email-D14836?style=flat-square&logo=gmail&logoColor=white)](mailto:juan.morales@outlook.com.br)

@@ -151,10 +151,6 @@ Distribuído sob a licença [MIT](LICENSE): use, adapte e distribua livremente, 
 **Juan Antonio Morales**  
 Gerente de Projetos de Dados | Data & Analytics · BI · Gestão de Portfólio | Liderança de Squads e Rollout LATAM | Databricks · Power BI · IA Generativa
 
-Liderei a agenda de Data & Analytics das operações da América Latina na Arcos Dorados (McDonald's), à frente de squads multidisciplinares, em programas patrocinados por C-level e com rollout em até 12 mercados. Entre os destaques: o P&L por Segmentos em 12 mercados, com redução de 63% nos processos manuais, e o programa de fidelidade Meu Méqui, do piloto ao rollout em 11 mercados.
-
-Hoje aplico a mesma lógica à IA Generativa, construindo agentes e automações que rodam em produção pela [Kailor](https://kailor.com.br), enquanto curso o MBA em Gerenciamento de Projetos na FGV.
-
 [![LinkedIn](https://img.shields.io/badge/LinkedIn-0A66C2?style=flat-square&logo=linkedin&logoColor=white)](https://www.linkedin.com/in/juanantoniomorales)
 [![GitHub](https://img.shields.io/badge/GitHub-juanidives-181717?style=flat-square&logo=github)](https://github.com/juanidives)
 [![Email](https://img.shields.io/badge/Email-D14836?style=flat-square&logo=gmail&logoColor=white)](mailto:juan.morales@outlook.com.br)
