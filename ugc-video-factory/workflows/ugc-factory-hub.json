@@ -1,0 +1,762 @@
+{
+  "name": "UGC Factory HUB",
+  "nodes": [
+    {
+      "parameters": {
+        "amount": 10
+      },
+      "type": "n8n-nodes-base.wait",
+      "typeVersion": 1.1,
+      "position": [
+        -320,
+        -304
+      ],
+      "id": "1920d0f8-84e4-4206-a056-10adf369ab28",
+      "name": "Wait",
+      "webhookId": "1cab7719-3287-44de-826b-84741211e5c8"
+    },
+    {
+      "parameters": {
+        "updates": [
+          "message"
+        ],
+        "additionalFields": {}
+      },
+      "type": "n8n-nodes-base.telegramTrigger",
+      "typeVersion": 1.2,
+      "position": [
+        -1152,
+        -320
+      ],
+      "id": "4da6bb59-9dcf-48c9-bf5c-259e9641161f",
+      "name": "Telegram Trigger",
+      "webhookId": "7d3f5d30-fbf9-497a-bad6-192808ab17de",
+      "credentials": {
+        "telegramApi": {
+          "id": "CREDENTIAL_ID",
+          "name": "Telegram Bot API"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsonSchemaExample": "{\n\t\"image prompt\": \"emotion, ...\",\n\t\"aspect_ratio\": \"3:2\"\n}"
+      },
+      "type": "@n8n/n8n-nodes-langchain.outputParserStructured",
+      "typeVersion": 1.3,
+      "position": [
+        -688,
+        704
+      ],
+      "id": "85de9699-6b08-4339-8fd9-8ce16595a815",
+      "name": "Structured Output Parser"
+    },
+    {
+      "parameters": {
+        "operation": "sendPhoto",
+        "chatId": "={{ $('Telegram Trigger').item.json.message.chat.id }}",
+        "file": "={{ $('Fal AI - Get Image').item.json.images[0].url }}",
+        "additionalFields": {
+          "caption": "Gerando o vídeo a partir desta imagem..."
+        }
+      },
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        512,
+        -320
+      ],
+      "id": "dc3a5873-8d27-4c30-bdab-5b461df43506",
+      "name": "Send a photo message",
+      "webhookId": "022e5d87-9592-467c-9cb1-fe11a6fdc62e",
+      "credentials": {
+        "telegramApi": {
+          "id": "CREDENTIAL_ID",
+          "name": "Telegram Bot API"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsonSchemaExample": "{\n\t\"video_prompt\": \"emotion, ...\"\n}"
+      },
+      "type": "@n8n/n8n-nodes-langchain.outputParserStructured",
+      "typeVersion": 1.3,
+      "position": [
+        -32,
+        528
+      ],
+      "id": "11be30ad-ebfc-407f-b9ce-9dc4967c7cea",
+      "name": "Structured Output Parser1"
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.wait",
+      "typeVersion": 1.1,
+      "position": [
+        368,
+        288
+      ],
+      "id": "5cf2c7e2-4948-400a-8a88-6b94dad98dc9",
+      "name": "Wait1",
+      "webhookId": "1de73dd7-d966-41b9-99f1-71531d8c4224"
+    },
+    {
+      "parameters": {
+        "operation": "sendVideo",
+        "chatId": "={{ $('Telegram Trigger').item.json.message.chat.id }}",
+        "file": "={{ $json.video.url }}",
+        "additionalFields": {}
+      },
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        1136,
+        304
+      ],
+      "id": "6f3a9ebb-ecc5-4163-8fb9-976076d0f436",
+      "name": "Send a video",
+      "webhookId": "41dd8837-997f-4590-b70b-c25eb3d15959",
+      "credentials": {
+        "telegramApi": {
+          "id": "CREDENTIAL_ID",
+          "name": "Telegram Bot API"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "resource": "file",
+        "fileId": "={{ $json.message.photo[1].file_id }}",
+        "additionalFields": {}
+      },
+      "id": "2cb031c9-c344-4197-b38d-e3275601e688",
+      "name": "Get Photo from Telegram",
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        -1152,
+        -80
+      ],
+      "webhookId": "89654683-67b9-4e1e-a382-813dad5696b2",
+      "credentials": {
+        "telegramApi": {
+          "id": "CREDENTIAL_ID",
+          "name": "Telegram Bot API"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "f98d076c-e0cf-46ce-853e-e6608b227745",
+              "leftValue": "={{ $json.status }}",
+              "rightValue": "COMPLETED",
+              "operator": {
+                "type": "string",
+                "operation": "equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "43c5c14a-5145-47c3-ba4a-33ac371cd515",
+      "name": "If3",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "position": [
+        80,
+        -304
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "f98d076c-e0cf-46ce-853e-e6608b227745",
+              "leftValue": "={{ $json.status }}",
+              "rightValue": "IN_PROGRESS",
+              "operator": {
+                "type": "string",
+                "operation": "equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "53ab3579-a343-4f43-9d57-44fec9f8437e",
+      "name": "If1",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "position": [
+        720,
+        288
+      ]
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=# INSTRUÇÕES\nO usuário está gerando um vídeo no estilo UGC para divulgar um produto. O usuário já passou uma imagem de refência e uma instrução, que lhe será fornecida abaixo.\n\nSua tarefa é criar um prompt para uma IA imagem gerar o frame inicial do vídeo. Pegue a imagem de referência e o ator descrito na imagem e o insira-o em cenas casuais e realistas, como se fossem capturadas por criadores de conteúdo ou influenciadores comuns.\n\nUse cenas casuais no estilo UGC, a menos que o usuário especifique o contrário, e siga as instruções abaixo.\n\nIsso significa:\n- Realismo cotidiano com cenários autênticos e identificáveis.\n- Estilo de foto amadora para iPhone.\n- Enquadramento e iluminação levemente imperfeitos.\n- Poses espontâneas e expressões genuínas.\n- Imperfeições visíveis (manchas, cabelo bagunçado, pele irregular, falhas de textura).\n- Ambientes do mundo real deixados como estão (desordem, fundos carregados).\n- Sempre preserve todo o **texto visível** do produto com precisão (logotipos, slogans, informações sobre embalagens). Nunca invente informações ou números extras.\n\n\n# REGRAS GERAIS PARA O PROMPT\nA proporção de tela preferida do usuário: inferida com base na mensagem acima; o padrão é vertical se não for informado.\n\n**A geração de diálogos/vídeos não é necessária. Apenas prompts de imagem são gerados.**\nEvite mencionar o nome de personagens protegidos por direitos autorais no prompt.\n\n\n# DADOS DO USUÁRIO\n***\nAqui estão as instruções do usuário:\n{{ $('Telegram Trigger').first().json.message.caption }}\n\n***\nDescrição da imagem de referência:\n{{ $('Analyze image').item.json.content }}\n\n\n\n# RESULTADO ESPERADO\n- Gere **somente prompts de geração de imagem** para modelos de IA com base na solicitação do usuário, garantindo o formato YAML exato.\n- NÃO use aspas duplas durante em sua geração (\"palavra\"), apenas aspas simples ('palavra).\n- Use como padrão **proporção vertical** se não for especificado.\n- Em sua reposta YAML, inclua os seguintes campos:\n  - 'image_prompt': (YAML em string com detalhes da cena. Não use aspas duplas aqui!!!)\n  - 'aspect_ratio_image\": (\"3:2\" ou \"2:3\")",
+        "hasOutputParser": true,
+        "options": {}
+      },
+      "id": "bebeeede-8106-4c6a-bcbf-c8ab2751691c",
+      "name": "AI Agent",
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 3.1,
+      "position": [
+        -864,
+        352
+      ]
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=# INSTRUÇÕES\nO usuário está gerando um vídeo no estilo UGC para divulgar um produto. O usuário já passou uma imagem de refência e uma instrução, que lhe será fornecida abaixo.\n\nSua tarefa é criar um prompt para uma IA gerar o vídeo final, bem como uma frase curta que será falada pelo ator do vídeo. Pegue a imagem de referência ou o produto na imagem de referência e insira-o em alguma cena casual e realistas, como se fossem capturadas por criadores de conteúdo ou influenciadores comuns.\n\nO ator está fazendo um review, portando deve estar parado em alguma cena, conversando com a câmera e fazendo seu review. Lembre-se que o ator é quem foi informado na imagem de descrição (seja um personagem, animal, humano ou qualquer outra coisa).\n\nUse cenas casuais no estilo UGC, a menos que o usuário especifique o contrário, e siga as instruções abaixo.\n\nIsso significa:\n- Realismo cotidiano com cenários autênticos e identificáveis.\n- Estilo de foto amadora para iPhone.\n- Enquadramento e iluminação levemente imperfeitos.\n- Poses espontâneas e expressões genuínas.\n- Imperfeições visíveis (manchas, cabelo bagunçado, pele irregular, falhas de textura).\n- Ambientes do mundo real deixados como estão (desordem, fundos carregados).\n- Sempre preserve todo o **texto visível** do produto com precisão (logotipos, slogans, informações sobre embalagens). Nunca invente informações ou números extras.\n\n\n# DADOS DO USUÁRIO\n***\nAqui estão as instruções do usuário:\n{{ $('Telegram Trigger').first().json.message.caption }}\n\n***\nDescrição da imagem de referência:\n{{ $('Analyze image').item.json.content }}\n\n\n\n# RESULTADO ESPERADO\n- Gere **somente o prompt para o modelo de IA de vídeo** com base na solicitação do usuário, garantindo o formato YAML exato.\n- Seu prompt e sua frase devem ser obrigatoriamente em português BR.\n- Não utilize aspas aqui para delimitar a frase falada ou qualquer outro momento do prompt: isto irá estragar o resultado!\n- Em sua reposta YAML, inclua o seguinte campo:\n  - 'video_prompt': (Uma descrição em texto sobre a cena a ser gerada. Em seu prompt você também deve também inserir a frase que o ator irá falar sobre o produto. Muito importe: em seu prompt, não inclua nenhum nome ou material protegido por direitos autoriais...não use aspas aqui, sem simples nem duplas para demarcar nenhum trecho de frase. Opte por frases corridas. se o ator ou personagem for famoso, descreva-o apenas por suas características.\n",
+        "hasOutputParser": true,
+        "options": {}
+      },
+      "id": "38632f91-38bd-4b1f-b6fe-ba34979c182f",
+      "name": "AI Video Generator",
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 3.1,
+      "position": [
+        -176,
+        288
+      ]
+    },
+    {
+      "parameters": {
+        "resource": "image",
+        "operation": "analyze",
+        "modelId": {
+          "__rl": true,
+          "mode": "list",
+          "value": "gpt-5.4",
+          "cachedResultName": "GPT-5.4"
+        },
+        "text": "=Analise a imagem passada e determine se ela se trata de um personagem, um produto, ou ambos.\n\nSe a imagem tratar-se de um produto, retorne a análise em formato YAML nos seguintes campos:\n\nbrand_name: (nome da marca que aparece na imagem, se visível ou inferível)\ncolor_scheme:\n    - hex: (hex code da cor usada)\n    - name: (nome da cor)\n- font style: (descreva a cor usada, serif/sans-serif, bolt, etc)\n- visual_description: (uma frase descrevendo o que você está vendo na imagem, ignorando o fundo)\n\nSe a imagem tratar-se de um personagem, retorne a análise em formato YAML nos seguintes campos:\ncharacter_name: (nome do personagem se puder ser inferido)\ncolor_scheme:\n    - hex: (hex code da cor usada)\n    - name: (nome da cor)\noutfit_style: (descrição da roupa, acessórios ou características notáveis).\n- visual_description: (uma frase descrevendo o que você está vendo na imagem, ignorando o fundo)\n\nRetorne apenas o YAML.\nNão explique ou adicione nenhuma descrição adicional.",
+        "imageUrls": "={{ $json.access_url }}",
+        "options": {}
+      },
+      "id": "42d3d0b6-78ad-4be1-9297-b0bd289481d0",
+      "name": "Analyze image",
+      "type": "@n8n/n8n-nodes-langchain.openAi",
+      "typeVersion": 2.3,
+      "position": [
+        -1136,
+        448
+      ],
+      "credentials": {
+        "openAiApi": {
+          "id": "CREDENTIAL_ID",
+          "name": "OpenAI API"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "model": {
+          "__rl": true,
+          "mode": "list",
+          "value": "gpt-5.4-mini",
+          "cachedResultName": "gpt-5.4-mini"
+        },
+        "builtInTools": {},
+        "options": {}
+      },
+      "id": "f1cceeb8-3428-44ba-afac-2731d0cefb82",
+      "name": "OpenAI Chat Model",
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+      "typeVersion": 1.3,
+      "position": [
+        -880,
+        704
+      ],
+      "credentials": {
+        "openAiApi": {
+          "id": "CREDENTIAL_ID",
+          "name": "OpenAI API"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "url": "={{ $('Fal AI - SeeDream').item.json.response_url }}",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "options": {}
+      },
+      "id": "fe32ab33-d6ed-4faf-8a72-f5e830fe149f",
+      "name": "Fal AI - Get Image",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.4,
+      "position": [
+        304,
+        -320
+      ],
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "CREDENTIAL_ID",
+          "name": "Fal.ai API Key (Header Auth)"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://queue.fal.run/fal-ai/bytedance/seedream/v4.5/edit",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"prompt\": \"{{ $json.output['image prompt'] }}\",\n  \"image_urls\": [\n\"{{ $('Upload to Fal.ai Storage').item.json.access_url }}\"\n ]\n}",
+        "options": {}
+      },
+      "id": "e1589536-f237-4703-98cb-cb7f9d1fa049",
+      "name": "Fal AI - SeeDream",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.4,
+      "position": [
+        -544,
+        352
+      ],
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "CREDENTIAL_ID",
+          "name": "Fal.ai API Key (Header Auth)"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "url": "={{ $json.status_url }}",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "options": {}
+      },
+      "id": "016fd788-78cb-4de6-8a25-390bc620967a",
+      "name": "Fal AI - Check Status2",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.4,
+      "position": [
+        -128,
+        -304
+      ],
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "CREDENTIAL_ID",
+          "name": "Fal.ai API Key (Header Auth)"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "url": "={{ $json.response_url }}",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "options": {}
+      },
+      "id": "9c2a493f-ad72-469b-b0d4-131d3daacf1c",
+      "name": "Fal AI - Vídeo na praia1",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.4,
+      "position": [
+        928,
+        304
+      ],
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "CREDENTIAL_ID",
+          "name": "Fal.ai API Key (Header Auth)"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "url": "={{ $('Fal AI - Veo').item.json.status_url }}",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "options": {}
+      },
+      "id": "37d1defc-bfe4-46e5-8230-27ed9d1dadcc",
+      "name": "Fal AI - Check Status",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.4,
+      "position": [
+        544,
+        288
+      ],
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "CREDENTIAL_ID",
+          "name": "Fal.ai API Key (Header Auth)"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://queue.fal.run/fal-ai/veo3.1/fast/image-to-video",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n\"prompt\": \"{{ $json.output.video_prompt }}\",\n\"image_url\": \"{{ $('Fal AI - Get Image').item.json.images[0].url }}\",\n\"duration\": \"8s\",\n\"generate_audio\": \"true\",\n\"aspect_ratio\": \"9:16\"\n   }",
+        "options": {}
+      },
+      "id": "741c0cf4-e4ee-41ef-8cdb-9157173b0f66",
+      "name": "Fal AI - Veo",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.4,
+      "position": [
+        160,
+        288
+      ],
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "CREDENTIAL_ID",
+          "name": "Fal.ai API Key (Header Auth)"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://v3.fal.media/files/upload",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "sendBody": true,
+        "contentType": "binaryData",
+        "inputDataFieldName": "data",
+        "options": {}
+      },
+      "id": "8f98f4c1-1e48-44c8-980c-8f3af70a0a0a",
+      "name": "Upload to Fal.ai Storage",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.4,
+      "position": [
+        -1152,
+        176
+      ],
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "CREDENTIAL_ID",
+          "name": "Fal.ai API Key (Header Auth)"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": false,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "a1a1a1a1-0000-4000-8000-000000000001",
+              "leftValue": "={{ $('Telegram Trigger').first().json.message.caption }}",
+              "rightValue": "solo imagen",
+              "operator": {
+                "type": "string",
+                "operation": "contains"
+              }
+            },
+            {
+              "id": "a1a1a1a1-0000-4000-8000-000000000002",
+              "leftValue": "={{ $('Telegram Trigger').first().json.message.caption }}",
+              "rightValue": "só imagem",
+              "operator": {
+                "type": "string",
+                "operation": "contains"
+              }
+            }
+          ],
+          "combinator": "or"
+        },
+        "options": {}
+      },
+      "id": "5f78ab34-f7e6-474a-a7d8-abbf458195d2",
+      "name": "If - Solo Imagen",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "position": [
+        720,
+        -320
+      ]
+    }
+  ],
+  "connections": {
+    "Telegram Trigger": {
+      "main": [
+        [
+          {
+            "node": "Get Photo from Telegram",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Fal AI - Check Status2": {
+      "main": [
+        [
+          {
+            "node": "If3",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If3": {
+      "main": [
+        [
+          {
+            "node": "Fal AI - Get Image",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Wait",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Analyze image": {
+      "main": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenAI Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_languageModel",
+            "index": 0
+          },
+          {
+            "node": "AI Video Generator",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Structured Output Parser": {
+      "ai_outputParser": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_outputParser",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "AI Agent": {
+      "main": [
+        [
+          {
+            "node": "Fal AI - SeeDream",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Fal AI - Get Image": {
+      "main": [
+        [
+          {
+            "node": "Send a photo message",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Structured Output Parser1": {
+      "ai_outputParser": [
+        [
+          {
+            "node": "AI Video Generator",
+            "type": "ai_outputParser",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Wait1": {
+      "main": [
+        [
+          {
+            "node": "Fal AI - Check Status",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If1": {
+      "main": [
+        [
+          {
+            "node": "Wait1",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Fal AI - Vídeo na praia1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Fal AI - Vídeo na praia1": {
+      "main": [
+        [
+          {
+            "node": "Send a video",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Fal AI - Check Status": {
+      "main": [
+        [
+          {
+            "node": "If1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Fal AI - Veo": {
+      "main": [
+        [
+          {
+            "node": "Wait1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "AI Video Generator": {
+      "main": [
+        [
+          {
+            "node": "Fal AI - Veo",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Wait": {
+      "main": [
+        [
+          {
+            "node": "Fal AI - Check Status2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get Photo from Telegram": {
+      "main": [
+        [
+          {
+            "node": "Upload to Fal.ai Storage",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Upload to Fal.ai Storage": {
+      "main": [
+        [
+          {
+            "node": "Analyze image",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Send a photo message": {
+      "main": [
+        [
+          {
+            "node": "If - Solo Imagen",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If - Solo Imagen": {
+      "main": [
+        null,
+        [
+          {
+            "node": "AI Video Generator",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate"
+  },
+  "meta": {
+    "aiBuilderAssisted": true,
+    "builderVariant": "mcp"
+  },
+  "tags": []
+}

@@ -1,0 +1,672 @@
+{
+  "name": "2. Enviar exercicio (seg a sex 9h)",
+  "nodes": [
+    {
+      "parameters": {
+        "documentId": {
+          "__rl": true,
+          "mode": "id",
+          "value": "YOUR_SPREADSHEET_ID",
+          "cachedResultName": "exercicios-espanhol"
+        },
+        "sheetName": {
+          "__rl": true,
+          "mode": "name",
+          "value": "config",
+          "cachedResultName": "config"
+        },
+        "options": {}
+      },
+      "id": "a344a39c-d540-4ae0-8a31-25aecb42a812",
+      "name": "Ler config",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        224,
+        -16
+      ],
+      "retryOnFail": true,
+      "maxTries": 3,
+      "waitBetweenTries": 5000,
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "CREDENTIAL_ID",
+          "name": "Google Sheets OAuth2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "documentId": {
+          "__rl": true,
+          "mode": "id",
+          "value": "YOUR_SPREADSHEET_ID",
+          "cachedResultName": "exercicios-espanhol"
+        },
+        "sheetName": {
+          "__rl": true,
+          "mode": "name",
+          "value": "exercicios",
+          "cachedResultName": "exercicios"
+        },
+        "options": {}
+      },
+      "id": "48e34ae4-d66f-4063-90aa-42e92c37d6fc",
+      "name": "Ler exercicios",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        448,
+        -16
+      ],
+      "executeOnce": true,
+      "retryOnFail": true,
+      "maxTries": 3,
+      "waitBetweenTries": 5000,
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "CREDENTIAL_ID",
+          "name": "Google Sheets OAuth2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "\nconst cfgLinhas = $('Ler config').all();\nconst cfg = {};\nfor (let i = 0; i < cfgLinhas.length; i++) {\n  const l = cfgLinhas[i].json;\n  if (l.chave) cfg[String(l.chave).trim()] = String(l.valor).trim();\n}\n\nif ((cfg.ativo || 'sim').toLowerCase() !== 'sim') return [];\n\nconst agora = new Date();\nconst nomes = ['dom', 'seg', 'ter', 'qua', 'qui', 'sex', 'sab'];\nconst diaHoje = nomes[agora.getDay()];\nif (diaHoje === 'dom' || diaHoje === 'sab') return [];\n\nconst segunda = new Date(agora);\nconst desloca = agora.getDay() === 0 ? -6 : 1 - agora.getDay();\nsegunda.setDate(agora.getDate() + desloca);\nconst semanaHoje = segunda.toISOString().slice(0, 10);\n\nconst linhas = $input.all();\nconst saida = [];\nfor (let i = 0; i < linhas.length; i++) {\n  const r = linhas[i].json;\n  if (String(r.dia || '').trim() !== diaHoje) continue;\n  if (String(r.semana || '').trim() !== semanaHoje) continue;\n  if (String(r.status || '').trim().toLowerCase() !== 'aprovado') continue;\n  saida.push({ json: Object.assign({}, r, {\n    destino: cfg.destino,\n    instancia: cfg.instancia,\n    voice_id: cfg.voice_id\n  }) });\n}\nreturn saida;\n"
+      },
+      "id": "5e53e2fd-998c-4dc6-95f3-3178e13d38ef",
+      "name": "Filtrar o dia de hoje",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        672,
+        -16
+      ]
+    },
+    {
+      "parameters": {
+        "rules": {
+          "values": [
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": false,
+                  "leftValue": "",
+                  "typeValidation": "loose",
+                  "version": 1
+                },
+                "conditions": [
+                  {
+                    "leftValue": "={{ $json.tipo }}",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    },
+                    "rightValue": "enquete"
+                  }
+                ],
+                "combinator": "and"
+              }
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": false,
+                  "leftValue": "",
+                  "typeValidation": "loose",
+                  "version": 1
+                },
+                "conditions": [
+                  {
+                    "leftValue": "={{ $json.tipo }}",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    },
+                    "rightValue": "audio"
+                  }
+                ],
+                "combinator": "and"
+              }
+            }
+          ]
+        },
+        "options": {
+          "fallbackOutput": "extra",
+          "renameFallbackOutput": "texto"
+        }
+      },
+      "id": "92cc1c9f-9f3d-4bd9-bc38-24812866d648",
+      "name": "Rotear por tipo",
+      "type": "n8n-nodes-base.switch",
+      "typeVersion": 3.2,
+      "position": [
+        896,
+        -32
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "\nconst linhas = $('Filtrar o dia de hoje').all();\nconst agora = new Date().toISOString().slice(0, 16).replace('T', ' ');\nconst saida = [];\nfor (let i = 0; i < linhas.length; i++) {\n  saida.push({ json: { id: linhas[i].json.id, status: 'enviado', enviado_em: agora } });\n}\nreturn saida;\n"
+      },
+      "id": "8692fbd2-4444-4c5c-8e1d-fc3823ebb4e6",
+      "name": "Preparar marcacao",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        2016,
+        -16
+      ],
+      "executeOnce": true
+    },
+    {
+      "parameters": {
+        "operation": "update",
+        "documentId": {
+          "__rl": true,
+          "mode": "id",
+          "value": "YOUR_SPREADSHEET_ID",
+          "cachedResultName": "exercicios-espanhol"
+        },
+        "sheetName": {
+          "__rl": true,
+          "mode": "name",
+          "value": "exercicios",
+          "cachedResultName": "exercicios"
+        },
+        "columns": {
+          "mappingMode": "autoMapInputData",
+          "value": {},
+          "matchingColumns": [
+            "id"
+          ],
+          "schema": [
+            {
+              "id": "id",
+              "displayName": "id",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "status",
+              "displayName": "status",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "enviado_em",
+              "displayName": "enviado_em",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            }
+          ]
+        },
+        "options": {
+          "cellFormat": "USER_ENTERED"
+        }
+      },
+      "id": "c5d52b36-76fb-443c-823c-b91d387a9fe7",
+      "name": "Marcar como enviado",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        2240,
+        -16
+      ],
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "CREDENTIAL_ID",
+          "name": "Google Sheets OAuth2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "resource": "speech",
+        "voice": {
+          "__rl": true,
+          "mode": "id",
+          "value": "={{ $json.voice_id }}"
+        },
+        "text": "={{ $json.guion }}",
+        "additionalOptions": {
+          "model": {
+            "__rl": true,
+            "mode": "id",
+            "value": "eleven_multilingual_v2",
+            "cachedResultName": "eleven_multilingual_v2"
+          },
+          "outputFormat": "mp3_44100_128",
+          "languageCode": "es"
+        },
+        "requestOptions": {}
+      },
+      "id": "9b0af4c7-f224-41a4-8881-6ba256ba9b49",
+      "name": "Gerar audio",
+      "type": "@elevenlabs/n8n-nodes-elevenlabs.elevenLabs",
+      "typeVersion": 1,
+      "position": [
+        1120,
+        -16
+      ],
+      "credentials": {
+        "elevenLabsApi": {
+          "id": "CREDENTIAL_ID",
+          "name": "ElevenLabs API"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "binaryToPropery",
+        "destinationKey": "audio_base64",
+        "options": {}
+      },
+      "id": "699ca337-8e53-404d-8033-9a55fe3c581e",
+      "name": "Audio para base64",
+      "type": "n8n-nodes-base.extractFromFile",
+      "typeVersion": 1.1,
+      "position": [
+        1344,
+        -16
+      ]
+    },
+    {
+      "parameters": {
+        "resource": "messages-api",
+        "operation": "send-audio",
+        "instanceName": "={{ $('Filtrar o dia de hoje').first().json.instancia }}",
+        "remoteJid": "={{ $('Filtrar o dia de hoje').first().json.destino }}",
+        "media": "={{ $json.audio_base64 }}",
+        "options_message": {
+          "delay": 1200
+        }
+      },
+      "id": "e063638f-f08c-4bca-ae50-64afb2797638",
+      "name": "Enviar audio",
+      "type": "n8n-nodes-evolution-api.evolutionApi",
+      "typeVersion": 1,
+      "position": [
+        1568,
+        -16
+      ],
+      "credentials": {
+        "evolutionApi": {
+          "id": "CREDENTIAL_ID",
+          "name": "Evolution API"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "resource": "messages-api",
+        "instanceName": "={{ $('Filtrar o dia de hoje').first().json.instancia }}",
+        "remoteJid": "={{ $('Filtrar o dia de hoje').first().json.destino }}",
+        "messageText": "={{ $('Filtrar o dia de hoje').first().json.enunciado }}",
+        "options_message": {
+          "delay": 2000
+        }
+      },
+      "id": "4dddca8d-71b3-4a52-b2b2-5c45687600cf",
+      "name": "Enviar perguntas do audio",
+      "type": "n8n-nodes-evolution-api.evolutionApi",
+      "typeVersion": 1,
+      "position": [
+        1792,
+        -16
+      ],
+      "credentials": {
+        "evolutionApi": {
+          "id": "CREDENTIAL_ID",
+          "name": "Evolution API"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "resource": "messages-api",
+        "instanceName": "={{ $json.instancia }}",
+        "remoteJid": "={{ $json.destino }}",
+        "messageText": "={{ $json.enunciado }}",
+        "options_message": {
+          "delay": 1200
+        }
+      },
+      "id": "93cb1538-25ee-4e71-a9f1-ee3f2ad5b463",
+      "name": "Enviar texto",
+      "type": "n8n-nodes-evolution-api.evolutionApi",
+      "typeVersion": 1,
+      "position": [
+        1792,
+        176
+      ],
+      "retryOnFail": true,
+      "maxTries": 3,
+      "waitBetweenTries": 2000,
+      "onError": "continueRegularOutput",
+      "credentials": {
+        "evolutionApi": {
+          "id": "CREDENTIAL_ID",
+          "name": "Evolution API"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "weeks",
+              "triggerAtDay": [
+                1,
+                2,
+                3,
+                4,
+                5
+              ],
+              "triggerAtHour": 9
+            }
+          ]
+        }
+      },
+      "id": "900f9364-47a4-46fe-9cf7-9c4692a1155c",
+      "name": "Seg a sex 9h",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.3,
+      "position": [
+        0,
+        -16
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "const linhas = $input.all();\nif (linhas.length === 0) return [];\n\nconst base = linhas[0].json;\nconst semana = String(base.semana || '').trim();\n\nconst dados = [];\nfor (let i = 0; i < linhas.length; i++) {\n  const r = linhas[i].json;\n  dados.push({\n    p: String(r.enunciado || '').trim(),\n    o: [r.opcao_a, r.opcao_b, r.opcao_c, r.opcao_d].filter(function (x) { return String(x || '').trim(); }).map(function (x) { return String(x).trim(); }),\n    g: String(r.gabarito || '').trim(),\n    e: String(r.explicacao || '').trim()\n  });\n}\n\nconst h = [];\nh.push('<!DOCTYPE html>');\nh.push('<html lang=\"es\"><head><meta charset=\"utf-8\">');\nh.push('<meta name=\"viewport\" content=\"width=device-width,initial-scale=1\">');\nh.push('<title>Desafío del día</title>');\nh.push('<style>');\nh.push(':root{--bg:#faf7f2;--card:#fff;--ink:#2b2b2b;--muted:#6b6b6b;--line:#e5ddd0;--ok:#1f8a4c;--okbg:#e8f5ec;--no:#b3261e;--nobg:#fbe9e7}');\nh.push('*{box-sizing:border-box}');\nh.push('body{margin:0 auto;padding:24px 16px 64px;max-width:640px;background:var(--bg);color:var(--ink);line-height:1.5;font-family:-apple-system,BlinkMacSystemFont,\"Segoe UI\",Roboto,sans-serif}');\nh.push('h1{font-size:22px;margin:0 0 4px}');\nh.push('.sub{color:var(--muted);font-size:15px;margin:0 0 24px}');\nh.push('.q{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:18px;margin-bottom:16px}');\nh.push('.qt{font-size:18px;font-weight:600;margin:0 0 12px}');\nh.push('.opt{display:block;width:100%;text-align:left;padding:14px 16px;margin:8px 0;border:1px solid var(--line);border-radius:12px;background:var(--card);font-size:17px;font-family:inherit;color:inherit;cursor:pointer}');\nh.push('.opt.ok{background:var(--okbg);border-color:var(--ok);color:var(--ok);font-weight:600}');\nh.push('.opt.no{background:var(--nobg);border-color:var(--no);color:var(--no)}');\nh.push('.exp{display:none;margin-top:12px;padding:12px 14px;border-radius:10px;background:#f3efe7;font-size:15px;color:var(--muted)}');\nh.push('#score{margin-top:24px;text-align:center;font-size:18px;font-weight:600}');\nh.push('</style></head><body>');\nh.push('<h1>Desafío del día</h1>');\nh.push('<p class=\"sub\">Toca una opcion. Vas a ver enseguida si acertaste y por que.</p>');\nh.push('<div id=\"app\"></div><div id=\"score\"></div>');\nh.push('<script id=\"datos\" type=\"application/json\">' + JSON.stringify(dados) + '</' + 'script>');\nh.push('<script>');\nh.push('var SEM=' + JSON.stringify(semana) + ';');\nh.push('var W=\"https://YOUR_N8N_DOMAIN/webhook/YOUR_WEBHOOK_PATH\";');\nh.push('function avisar(n,r,ok){try{new Image().src=W+\"?s=\"+encodeURIComponent(SEM)+\"&p=\"+n+\"&r=\"+encodeURIComponent(r)+\"&ok=\"+(ok?1:0);}catch(e){}}');\nh.push('var D=JSON.parse(document.getElementById(\"datos\").textContent);');\nh.push('var app=document.getElementById(\"app\"),hechas=0,bien=0;');\nh.push('function norm(s){return String(s).trim().toLowerCase();}');\nh.push('D.forEach(function(q,i){');\nh.push('var d=document.createElement(\"div\");d.className=\"q\";');\nh.push('var t=document.createElement(\"p\");t.className=\"qt\";t.textContent=(i+1)+\". \"+q.p;d.appendChild(t);');\nh.push('var ex=document.createElement(\"div\");ex.className=\"exp\";');\nh.push('q.o.forEach(function(op){');\nh.push('var b=document.createElement(\"button\");b.className=\"opt\";b.textContent=op;');\nh.push('b.onclick=function(){');\nh.push('var todos=d.querySelectorAll(\".opt\");');\nh.push('for(var k=0;k<todos.length;k++){todos[k].disabled=true;}');\nh.push('var acerto=norm(op)===norm(q.g);');\nh.push('b.className=acerto?\"opt ok\":\"opt no\";');\nh.push('if(!acerto){for(var k=0;k<todos.length;k++){if(norm(todos[k].textContent)===norm(q.g)){todos[k].className=\"opt ok\";}}}');\nh.push('ex.style.display=\"block\";');\nh.push('ex.textContent=(acerto?\"Correcto. \":\"La respuesta era: \"+q.g+\". \")+(q.e||\"\");');\nh.push('avisar(i+1,op,acerto);');\nh.push('hechas++;if(acerto){bien++;}');\nh.push('if(hechas===D.length){document.getElementById(\"score\").textContent=\"Terminaste: \"+bien+\" de \"+D.length+\".\";}');\nh.push('};d.appendChild(b);});');\nh.push('d.appendChild(ex);app.appendChild(d);});');\nh.push('</' + 'script></body></html>');\n\nconst html = h.join(String.fromCharCode(10));\nconst caminho = 'enquetes/' + semana + '.html';\nconst url = 'https://YOUR_GITHUB_USER.github.io/YOUR_PAGES_REPO/' + caminho;\n\nreturn [{ json: {\n  html: html,\n  caminho: caminho,\n  url: url,\n  semana: semana,\n  destino: base.destino,\n  instancia: base.instancia\n} }];"
+      },
+      "id": "eb6ee3a1-bb72-40c1-a952-0e90f332c70d",
+      "name": "Montar pagina da enquete",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1120,
+        -208
+      ]
+    },
+    {
+      "parameters": {
+        "resource": "file",
+        "owner": {
+          "__rl": true,
+          "mode": "name",
+          "value": "YOUR_GITHUB_USER"
+        },
+        "repository": {
+          "__rl": true,
+          "mode": "name",
+          "value": "YOUR_PAGES_REPO"
+        },
+        "filePath": "={{ $json.caminho }}",
+        "fileContent": "={{ $json.html }}",
+        "commitMessage": "=Enquete da semana {{ $json.semana }}",
+        "additionalParameters": {
+          "branch": {
+            "branch": "main"
+          }
+        }
+      },
+      "id": "ab92857c-90b1-4582-a734-bc886b486f41",
+      "name": "Publicar no GitHub",
+      "type": "n8n-nodes-base.github",
+      "typeVersion": 1.1,
+      "position": [
+        1344,
+        -208
+      ],
+      "webhookId": "703408b0-be5b-48d1-a25f-81432c1e9ae9",
+      "credentials": {
+        "githubApi": {
+          "id": "CREDENTIAL_ID",
+          "name": "GitHub API"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "amount": 90
+      },
+      "id": "19196610-7600-45f4-b23c-b07b1fa3e050",
+      "name": "Esperar o Pages publicar",
+      "type": "n8n-nodes-base.wait",
+      "typeVersion": 1.1,
+      "position": [
+        1568,
+        -208
+      ],
+      "webhookId": "ecb52b3e-a24f-499d-9606-3007199b2b43"
+    },
+    {
+      "parameters": {
+        "resource": "messages-api",
+        "instanceName": "={{ $('Montar pagina da enquete').first().json.instancia }}",
+        "remoteJid": "={{ $('Montar pagina da enquete').first().json.destino }}",
+        "messageText": "=Responde el desafío de hoy:\n\n{{ $('Montar pagina da enquete').first().json.url }}",
+        "options_message": {
+          "delay": 1200
+        }
+      },
+      "id": "ebf0bf8f-fa8d-4a8e-a922-7f760f550425",
+      "name": "Enviar link da enquete",
+      "type": "n8n-nodes-evolution-api.evolutionApi",
+      "typeVersion": 1,
+      "position": [
+        1792,
+        -208
+      ],
+      "credentials": {
+        "evolutionApi": {
+          "id": "CREDENTIAL_ID",
+          "name": "Evolution API"
+        }
+      }
+    }
+  ],
+  "connections": {
+    "Ler config": {
+      "main": [
+        [
+          {
+            "node": "Ler exercicios",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Ler exercicios": {
+      "main": [
+        [
+          {
+            "node": "Filtrar o dia de hoje",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Filtrar o dia de hoje": {
+      "main": [
+        [
+          {
+            "node": "Rotear por tipo",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Rotear por tipo": {
+      "main": [
+        [
+          {
+            "node": "Montar pagina da enquete",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Gerar audio",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Enviar texto",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Preparar marcacao": {
+      "main": [
+        [
+          {
+            "node": "Marcar como enviado",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Gerar audio": {
+      "main": [
+        [
+          {
+            "node": "Audio para base64",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Audio para base64": {
+      "main": [
+        [
+          {
+            "node": "Enviar audio",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Enviar audio": {
+      "main": [
+        [
+          {
+            "node": "Enviar perguntas do audio",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Enviar perguntas do audio": {
+      "main": [
+        [
+          {
+            "node": "Preparar marcacao",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Enviar texto": {
+      "main": [
+        [
+          {
+            "node": "Preparar marcacao",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Seg a sex 9h": {
+      "main": [
+        [
+          {
+            "node": "Ler config",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Montar pagina da enquete": {
+      "main": [
+        [
+          {
+            "node": "Publicar no GitHub",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Publicar no GitHub": {
+      "main": [
+        [
+          {
+            "node": "Esperar o Pages publicar",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Esperar o Pages publicar": {
+      "main": [
+        [
+          {
+            "node": "Enviar link da enquete",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Enviar link da enquete": {
+      "main": [
+        [
+          {
+            "node": "Preparar marcacao",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate",
+    "timezone": "America/Sao_Paulo"
+  },
+  "meta": {
+    "aiBuilderAssisted": true,
+    "builderVariant": "mcp"
+  },
+  "tags": []
+}

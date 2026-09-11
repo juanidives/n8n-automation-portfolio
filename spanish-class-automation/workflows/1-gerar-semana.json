@@ -1,0 +1,725 @@
+{
+  "name": "1. Gerar semana (sábado 6h)",
+  "nodes": [
+    {
+      "parameters": {
+        "url": "https://www.googleapis.com/drive/v3/files",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "googleDriveOAuth2Api",
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            {
+              "name": "q",
+              "value": "'YOUR_DRIVE_FOLDER_ID' in parents and trashed=false"
+            },
+            {
+              "name": "orderBy",
+              "value": "createdTime desc"
+            },
+            {
+              "name": "pageSize",
+              "value": "1"
+            },
+            {
+              "name": "fields",
+              "value": "files(id,name)"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "3edcbdce-838d-4cdc-b022-ab599058cb2b",
+      "name": "Achar ultima aula",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.5,
+      "position": [
+        224,
+        192
+      ],
+      "credentials": {
+        "googleDriveOAuth2Api": {
+          "id": "CREDENTIAL_ID",
+          "name": "Google Drive OAuth2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "url": "=https://www.googleapis.com/drive/v3/files/{{ $json.files[0].id }}?alt=media",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "googleDriveOAuth2Api",
+        "options": {
+          "response": {
+            "response": {
+              "responseFormat": "text"
+            }
+          }
+        }
+      },
+      "id": "ad104afe-8365-4266-992c-2bf3adfdb4b0",
+      "name": "Baixar aula",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.5,
+      "position": [
+        448,
+        192
+      ],
+      "credentials": {
+        "googleDriveOAuth2Api": {
+          "id": "CREDENTIAL_ID",
+          "name": "Google Drive OAuth2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "url": "https://www.googleapis.com/drive/v3/files/YOUR_CRITERIA_FILE_ID?alt=media",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "googleDriveOAuth2Api",
+        "options": {
+          "response": {
+            "response": {
+              "responseFormat": "text"
+            }
+          }
+        }
+      },
+      "id": "432d2853-a79b-4eaf-ac2d-f9d211f8b879",
+      "name": "Baixar criterios",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.5,
+      "position": [
+        672,
+        192
+      ],
+      "credentials": {
+        "googleDriveOAuth2Api": {
+          "id": "CREDENTIAL_ID",
+          "name": "Google Drive OAuth2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "url": "https://www.googleapis.com/drive/v3/files/YOUR_EXTERNAL_TOPICS_FILE_ID?alt=media",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "googleDriveOAuth2Api",
+        "options": {
+          "response": {
+            "response": {
+              "responseFormat": "text"
+            }
+          }
+        }
+      },
+      "id": "d2fc2f2c-a2ac-4060-87f7-e0ea07e6b3c3",
+      "name": "Baixar temas externos",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.5,
+      "position": [
+        896,
+        192
+      ],
+      "credentials": {
+        "googleDriveOAuth2Api": {
+          "id": "CREDENTIAL_ID",
+          "name": "Google Drive OAuth2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "url": "https://www.googleapis.com/drive/v3/files/YOUR_VOCABULARY_FILE_ID?alt=media",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "googleDriveOAuth2Api",
+        "options": {
+          "response": {
+            "response": {
+              "responseFormat": "text"
+            }
+          }
+        }
+      },
+      "id": "d47b011a-f22b-4b48-a331-aee6be21b276",
+      "name": "Baixar vocabulario",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.5,
+      "position": [
+        1120,
+        192
+      ],
+      "credentials": {
+        "googleDriveOAuth2Api": {
+          "id": "CREDENTIAL_ID",
+          "name": "Google Drive OAuth2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "const criterios = $('Baixar criterios').first().json.data;\nconst temas = $('Baixar temas externos').first().json.data;\nconst aula = $('Baixar aula').first().json.data;\nconst nomeAula = $('Achar ultima aula').first().json.files[0].name;\n\nconst hoje = new Date();\nconst diaSemana = hoje.getDay();\nlet faltam = (8 - diaSemana) % 7;\nif (faltam === 0) faltam = 7;\nconst segunda = new Date(hoje);\nsegunda.setDate(hoje.getDate() + faltam);\nconst semana = segunda.getFullYear() + '-' + String(segunda.getMonth() + 1).padStart(2, '0') + '-' + String(segunda.getDate()).padStart(2, '0');\n\nconst forma = '{\"ejercicios\":[{\"dia\":\"seg\",\"tipo\":\"lexico\",\"enunciado\":\"...\",\"guion\":\"\",\"opcao_a\":\"\",\"opcao_b\":\"\",\"opcao_c\":\"\",\"opcao_d\":\"\",\"gabarito\":\"\",\"explicacao\":\"\"}]}';\n\nconst prompt =\n  'Sos el generador de ejercicios diarios de un curso de espanol A1.\\n\\n' +\n  '=== MATERIAL DE LA AULA MAS RECIENTE (' + nomeAula + ') ===\\n' + aula + '\\n\\n' +\n  '=== TEMAS DE OTROS PROFESORES ===\\n' + temas + '\\n\\n' +\n  '=== CRITERIOS ===\\n' + criterios + '\\n\\n' +\n  '=== TAREA ===\\n' +\n  'Genera los ejercicios de la semana del ' + semana + '.\\n' +\n  'El array debe tener EXACTAMENTE 9 objetos, en este orden:\\n' +\n  '1 objeto dia=seg tipo=lexico\\n' +\n  '5 objetos dia=ter tipo=enquete, cinco preguntas DISTINTAS, cada una probando un punto gramatical o lexico diferente\\n' +\n  '1 objeto dia=qua tipo=audio\\n' +\n  '1 objeto dia=qui tipo=oral\\n' +\n  '1 objeto dia=sex tipo=lectura\\n' +\n  'Cuenta los objetos antes de responder. Si no son 9, corrige.\\n\\n' +\n  '=== TITULO OBLIGATORIO ===\\n' +\n  'Cada enunciado empieza con una linea de titulo en espanol, sola, seguida de un salto de linea:\\n' +\n  'seg: Vocabulario\\n' +\n  'qua: Escucha\\n' +\n  'qui: Habla\\n' +\n  'sex: Lectura\\n' +\n  'Los objetos de enquete NO llevan titulo.\\n\\n' +\n  '=== EL DIA DE VOCABULARIO (seg) ===\\n' +\n  'NUNCA hay huecos este dia. La palabra aparece ENTERA dentro de la frase, para que el alumno la vea en contexto.\\n' +\n  'Formato exacto de cada linea: numero, punto, la palabra, dos puntos, y una frase corta que USA esa palabra.\\n' +\n  'Correcto: 1. Bufanda: Ella usa una bufanda roja en invierno.\\n' +\n  'Incorrecto: 1. Bufanda: Ella usa una ..... roja en invierno.\\n' +\n  'Cinco palabras del material de la aula, y al final una sola linea pidiendo que escriban una frase propia con una de ellas.\\n\\n' +\n  '=== EL DIA DE ENQUETE (ter) ===\\n' +\n  'ESTO ES LO QUE MAS SE HACE MAL. Leelo dos veces.\\n\\n' +\n  'REGLA 1. El enunciado es UNA SOLA FRASE con un hueco, ambientada en la historia del personaje. Nada mas.\\n' +\n  'PROHIBIDO preguntar que se esta probando. Nada de \"cual es el pronombre posesivo\", \"como se pregunta por la cantidad\", \"que pronombre usarias\", \"cual es la opcion correcta para indicar que\". Esa pregunta REGALA la respuesta.\\n' +\n  'Correcto -> enunciado: \"Nicolas siempre ..... pregunta lo mismo a los huespedes.\" · opciones: les, los, le, se · gabarito: les\\n' +\n  'Incorrecto -> enunciado: \"Como se pregunta de quien es algo? ¿..... es este cuaderno?\" · la respuesta esta escrita en la pregunta\\n\\n' +\n  'REGLA 2. UNA SOLA opcion puede ser correcta. Antes de escribir cada pregunta, prueba las cuatro opciones en la frase: si dos funcionan, falta contexto y hay que reescribirla.\\n' +\n  'Correcto -> \"El cuaderno de Camila esta en la caja. Ese cuaderno es .....\" · mio, tuyo, suyo, nuestro · gabarito: suyo\\n' +\n  'Incorrecto -> \"Este cuaderno es .....\" · mio, tuyo, suyo, nuestro · aqui tres opciones sirven\\n\\n' +\n  'REGLA 3. Verifica QUIEN habla antes de fijar el gabarito. Si la frase la dice el personaje en primera persona, lo suyo es MIO. Solo se usa SUYO cuando otra persona habla del personaje.\\n' +\n  'Correcto -> Nicolas dice: \"Este cuaderno es .....\" · gabarito: mio\\n' +\n  'Incorrecto -> Nicolas dice: \"Este cuaderno es .....\" · gabarito: suyo · Nicolas no habla de si mismo en tercera persona\\n' +\n  'Lee la frase completa con la respuesta puesta antes de darla por buena.\\n\\n' +\n  'REGLA 4. Los distractores son errores que un brasileno comete de verdad: confundir mi con mio, le con lo, que con cual, muy con mucho. Nunca opciones absurdas que nadie elegiria.\\n\\n' +\n  '=== EL DIA DE AUDIO (qua) ===\\n' +\n  'Este dia usa DOS campos separados, y es importante no mezclarlos.\\n' +\n  'guion: el texto que sera narrado en audio, 30 a 40 segundos, entre 400 y 600 caracteres. Narrativa continua en primera persona del personaje, con un hilo conductor. Puntuacion generosa, comas y puntos, porque la puntuacion marca el ritmo de la voz. Numeros escritos con letras: las siete, nunca 7:00. Nada de titulos ni preguntas aqui.\\n' +\n  'enunciado: SOLO la palabra Escucha, un salto de linea, la linea \"Responde las preguntas:\" y 2 preguntas numeradas. El alumno NO puede leer el guion, si lo lee deja de ser un ejercicio de escucha.\\n' +\n  'Las 2 preguntas se responden escuchando el guion.\\n\\n' +\n  '=== EL DIA DE LECTURA (sex) ===\\n' +\n  'La linea de titulo, despues un texto corto de 4 a 6 lineas sobre el personaje de la aula, y al final la linea \"Responde las preguntas:\" seguida de 2 o 3 preguntas numeradas abiertas.\\n' +\n  'Sin opciones ni huecos. El campo guion va vacio. El texto cuenta algo nuevo del personaje, no repite el audio del miercoles.\\n\\n' +\n  '=== REGLAS DURAS, POR ENCIMA DE TODO LO DEMAS ===\\n' +\n  '1. Usa el personaje, el tema y el vocabulario de la aula de arriba. Nada generico.\\n' +\n  '2. No inventes palabras nuevas fuera de las 5 permitidas por ejercicio.\\n' +\n  '3. Sin asteriscos, sin guiones bajos, sin negritas, sin markdown de ningun tipo.\\n' +\n  '4. Maximo 10 lineas por enunciado. La consigna va al final, en una linea sola.\\n' +\n  '5. Solo los objetos de tipo enquete llevan huecos, escritos con puntos (.....). Los demas dias no llevan huecos nunca.\\n' +\n  '6. El campo guion SOLO se llena en el objeto de dia=qua. En los otros ocho va vacio.\\n\\n' +\n  '=== SALIDA ===\\n' +\n  'Responde SOLO con un objeto JSON, sin markdown ni explicaciones, con esta forma:\\n' +\n  forma + '\\n' +\n  'Solo los objetos de tipo enquete llevan opcao_a a opcao_d, gabarito y explicacao. En todos los demas van vacios.';\n\nreturn [{ json: { prompt: prompt, semana: semana, fonte: nomeAula.replace(/\\.md$/, '') } }];"
+      },
+      "id": "0fd9db0b-530b-4f31-9627-d7e1808a5557",
+      "name": "Montar prompt",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1344,
+        192
+      ]
+    },
+    {
+      "parameters": {
+        "modelId": {
+          "__rl": true,
+          "mode": "list",
+          "value": "gpt-4o",
+          "cachedResultName": "gpt-4o"
+        },
+        "responses": {
+          "values": [
+            {
+              "content": "={{ $json.prompt }}"
+            }
+          ]
+        },
+        "builtInTools": {},
+        "options": {
+          "maxTokens": 12000,
+          "textFormat": {
+            "textOptions": {
+              "type": "json_object"
+            }
+          },
+          "temperature": 0.7
+        }
+      },
+      "id": "377aefab-0dfe-4fca-997f-cae713db2675",
+      "name": "Gerar exercicios",
+      "type": "@n8n/n8n-nodes-langchain.openAi",
+      "typeVersion": 2.3,
+      "position": [
+        1568,
+        192
+      ],
+      "credentials": {
+        "openAiApi": {
+          "id": "CREDENTIAL_ID",
+          "name": "OpenAI API"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "const vocab = $('Baixar vocabulario').first().json.data;\nconst meta = $('Montar prompt').first().json;\n\nconst bruto = $input.first().json;\n\nlet dados = null;\nif (bruto.output && bruto.output[0] && bruto.output[0].content && bruto.output[0].content[0]) {\n  dados = bruto.output[0].content[0].text;\n}\nif (!dados) dados = bruto.content || bruto.output_text || bruto.text || bruto;\n\nif (typeof dados === 'string') {\n  const ini = dados.indexOf('{');\n  const fim = dados.lastIndexOf('}');\n  dados = JSON.parse(dados.slice(ini, fim + 1));\n}\n\nconst lista = dados.ejercicios || dados.exercicios || dados;\nif (!Array.isArray(lista)) {\n  throw new Error('Nao achei a lista de exercicios. Chaves recebidas: ' + Object.keys(dados).join(', '));\n}\n\nfunction norm(s) {\n  return String(s).toLowerCase().normalize('NFD').replace(/[\\u0300-\\u036f]/g, '').replace(/[^a-z0-9n ]/g, ' ');\n}\n\nconst conhecidas = new Set();\nconst todas = norm(vocab).split(/\\s+/);\nfor (let i = 0; i < todas.length; i++) {\n  if (todas[i].length > 2) conhecidas.add(todas[i]);\n}\nconst basicas = 'hola gracias favor por si no adios buenos buenas dias tardes noches uno dos tres cuatro cinco seis siete ocho nueve diez once doce trece catorce quince veinte treinta cien rojo azul verde amarillo blanco negro padre madre hermano hermana hijo hija escucha habla lectura vocabulario responde preguntas escribe frase palabra audio segundos'.split(' ');\nfor (let i = 0; i < basicas.length; i++) conhecidas.add(basicas[i]);\n\nconst contador = {};\nconst saida = [];\nfor (let k = 0; k < lista.length; k++) {\n  const e = lista[k];\n  const dia = e.dia || 'sem';\n  contador[dia] = (contador[dia] || 0) + 1;\n  const id = meta.semana + '-' + dia + '-' + contador[dia];\n\n  const partes = [e.enunciado, e.guion, e.opcao_a, e.opcao_b, e.opcao_c, e.opcao_d];\n  const campos = partes.filter(function (x) { return x; }).join(' ');\n  const novas = [];\n  const palavras = norm(campos).split(/\\s+/);\n  for (let j = 0; j < palavras.length; j++) {\n    const p = palavras[j];\n    if (p.length > 4 && !conhecidas.has(p) && novas.indexOf(p) === -1) novas.push(p);\n  }\n  saida.push({ json: {\n    id: id,\n    semana: meta.semana,\n    dia: dia,\n    tipo: e.tipo || '',\n    fonte: meta.fonte,\n    enunciado: e.enunciado || '',\n    guion: e.guion || '',\n    opcao_a: e.opcao_a || '',\n    opcao_b: e.opcao_b || '',\n    opcao_c: e.opcao_c || '',\n    opcao_d: e.opcao_d || '',\n    gabarito: e.gabarito || '',\n    explicacao: e.explicacao || e.explicacion || '',\n    palabras_nuevas: novas.join(', '),\n    status: novas.length > 12 ? 'revisar' : 'rascunho',\n    enviado_em: ''\n  } });\n}\nreturn saida;"
+      },
+      "id": "223c4812-0617-475f-9af0-5f7febb391e3",
+      "name": "Verificar vocabulario",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1920,
+        192
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "append",
+        "documentId": {
+          "__rl": true,
+          "mode": "id",
+          "value": "YOUR_SPREADSHEET_ID",
+          "cachedResultName": "exercicios-espanhol"
+        },
+        "sheetName": {
+          "__rl": true,
+          "mode": "name",
+          "value": "exercicios",
+          "cachedResultName": "exercicios"
+        },
+        "columns": {
+          "mappingMode": "autoMapInputData",
+          "value": {},
+          "schema": [
+            {
+              "id": "semana",
+              "displayName": "semana",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "dia",
+              "displayName": "dia",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "tipo",
+              "displayName": "tipo",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "fonte",
+              "displayName": "fonte",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "enunciado",
+              "displayName": "enunciado",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "opcao_a",
+              "displayName": "opcao_a",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "opcao_b",
+              "displayName": "opcao_b",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "opcao_c",
+              "displayName": "opcao_c",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "opcao_d",
+              "displayName": "opcao_d",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "gabarito",
+              "displayName": "gabarito",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "explicacao",
+              "displayName": "explicacao",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "palabras_nuevas",
+              "displayName": "palabras_nuevas",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "status",
+              "displayName": "status",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "enviado_em",
+              "displayName": "enviado_em",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            }
+          ]
+        },
+        "options": {
+          "cellFormat": "USER_ENTERED"
+        }
+      },
+      "id": "b3179185-71c6-480e-83ee-ded705495a25",
+      "name": "Escrever na planilha",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        2144,
+        0
+      ],
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "CREDENTIAL_ID",
+          "name": "Google Sheets OAuth2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "resource": "messages-api",
+        "instanceName": "YOUR_EVOLUTION_INSTANCE",
+        "remoteJid": "YOUR_WHATSAPP_NUMBER",
+        "messageText": "=Semana de {{ $('Montar prompt').first().json.semana }} gerada.\n\nFonte: {{ $('Montar prompt').first().json.fonte }}\n\nRevisa e marca aprovado:\nhttps://docs.google.com/spreadsheets/d/YOUR_SPREADSHEET_ID/edit",
+        "options_message": {}
+      },
+      "id": "2e9a7216-bc67-41f8-8c48-367497752d0a",
+      "name": "Avisar no WhatsApp",
+      "type": "n8n-nodes-evolution-api.evolutionApi",
+      "typeVersion": 1,
+      "position": [
+        2368,
+        0
+      ],
+      "executeOnce": true,
+      "credentials": {
+        "evolutionApi": {
+          "id": "CREDENTIAL_ID",
+          "name": "Evolution API"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "combinator": "and",
+          "conditions": [
+            {
+              "leftValue": "={{ $json.opcao_a }}",
+              "operator": {
+                "operation": "notEmpty",
+                "type": "string"
+              },
+              "rightValue": ""
+            }
+          ],
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "loose",
+            "version": 1
+          }
+        },
+        "options": {}
+      },
+      "id": "9d155569-1d7f-4758-a232-7f90ca1ebaaa",
+      "name": "Tem opcoes?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        2144,
+        288
+      ]
+    },
+    {
+      "parameters": {
+        "resource": "messages-api",
+        "operation": "send-poll",
+        "instanceName": "YOUR_EVOLUTION_INSTANCE",
+        "remoteJid": "YOUR_WHATSAPP_NUMBER",
+        "caption": "={{ $json.enunciado }}",
+        "options_display": {
+          "metadataValues": [
+            {
+              "optionValue": "={{ $json.opcao_a }}"
+            },
+            {
+              "optionValue": "={{ $json.opcao_b }}"
+            },
+            {
+              "optionValue": "={{ $json.opcao_c }}"
+            },
+            {
+              "optionValue": "={{ $json.opcao_d }}"
+            }
+          ]
+        }
+      },
+      "id": "546c50ee-475e-40cb-8410-55ff8309b1f2",
+      "name": "Previa enquete",
+      "type": "n8n-nodes-evolution-api.evolutionApi",
+      "typeVersion": 1,
+      "position": [
+        2624,
+        208
+      ],
+      "retryOnFail": true,
+      "maxTries": 3,
+      "waitBetweenTries": 2000,
+      "onError": "continueRegularOutput",
+      "credentials": {
+        "evolutionApi": {
+          "id": "CREDENTIAL_ID",
+          "name": "Evolution API"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "resource": "messages-api",
+        "instanceName": "YOUR_EVOLUTION_INSTANCE",
+        "remoteJid": "YOUR_WHATSAPP_NUMBER",
+        "messageText": "={{ $json.enunciado }}",
+        "options_message": {
+          "delay": 1500
+        }
+      },
+      "id": "8443fc60-7d91-4a21-baf7-ce1af335c56b",
+      "name": "Previa texto",
+      "type": "n8n-nodes-evolution-api.evolutionApi",
+      "typeVersion": 1,
+      "position": [
+        2368,
+        480
+      ],
+      "retryOnFail": true,
+      "maxTries": 3,
+      "waitBetweenTries": 2000,
+      "onError": "continueRegularOutput",
+      "credentials": {
+        "evolutionApi": {
+          "id": "CREDENTIAL_ID",
+          "name": "Evolution API"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "id": "2021ed86-ab0b-4eb5-9650-b171851af5df",
+      "name": "Uma enquete por vez",
+      "type": "n8n-nodes-base.splitInBatches",
+      "typeVersion": 3,
+      "position": [
+        2368,
+        192
+      ]
+    },
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "weeks",
+              "triggerAtDay": [
+                6
+              ],
+              "triggerAtHour": 6
+            }
+          ]
+        }
+      },
+      "id": "030ecb29-c3e7-45be-b0f4-a1aaeb11a5c5",
+      "name": "Sabado 6h",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.3,
+      "position": [
+        0,
+        192
+      ]
+    }
+  ],
+  "connections": {
+    "Achar ultima aula": {
+      "main": [
+        [
+          {
+            "node": "Baixar aula",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Baixar aula": {
+      "main": [
+        [
+          {
+            "node": "Baixar criterios",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Baixar criterios": {
+      "main": [
+        [
+          {
+            "node": "Baixar temas externos",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Baixar temas externos": {
+      "main": [
+        [
+          {
+            "node": "Baixar vocabulario",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Baixar vocabulario": {
+      "main": [
+        [
+          {
+            "node": "Montar prompt",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Montar prompt": {
+      "main": [
+        [
+          {
+            "node": "Gerar exercicios",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Gerar exercicios": {
+      "main": [
+        [
+          {
+            "node": "Verificar vocabulario",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Verificar vocabulario": {
+      "main": [
+        [
+          {
+            "node": "Escrever na planilha",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Tem opcoes?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Escrever na planilha": {
+      "main": [
+        [
+          {
+            "node": "Avisar no WhatsApp",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Tem opcoes?": {
+      "main": [
+        [
+          {
+            "node": "Uma enquete por vez",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Previa texto",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Uma enquete por vez": {
+      "main": [
+        null,
+        [
+          {
+            "node": "Previa enquete",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Previa enquete": {
+      "main": [
+        [
+          {
+            "node": "Uma enquete por vez",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Sabado 6h": {
+      "main": [
+        [
+          {
+            "node": "Achar ultima aula",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate",
+    "timezone": "America/Sao_Paulo"
+  },
+  "meta": {
+    "aiBuilderAssisted": true,
+    "builderVariant": "mcp"
+  },
+  "tags": []
+}

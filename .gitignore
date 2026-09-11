@@ -1,4 +1,4 @@
-﻿# Credenciais e dados sensíveis
+# Credenciais e dados sensíveis
 *.env
 .env*
 secrets/
@@ -11,3 +11,6 @@ Thumbs.db
 # IDE
 .vscode/
 .idea/
+
+# Exports originais do n8n (contêm IDs de instância, pinData e dados reais)
+_raw/

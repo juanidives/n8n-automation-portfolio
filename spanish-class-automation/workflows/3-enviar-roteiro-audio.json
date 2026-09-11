@@ -1,0 +1,199 @@
+{
+  "name": "3. Enviar roteiro do áudio (quarta 20h)",
+  "nodes": [
+    {
+      "id": "c4cdd817-abdb-49d0-abbd-7033671cb2bf",
+      "name": "Quarta 20h",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.3,
+      "position": [
+        0,
+        0
+      ],
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "weeks",
+              "triggerAtDay": [
+                3
+              ],
+              "triggerAtHour": 20,
+              "triggerAtMinute": 0,
+              "weeksInterval": 1
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "281ef941-351e-45b6-9567-daf7aa82b5de",
+      "name": "Ler config",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        224,
+        0
+      ],
+      "parameters": {
+        "resource": "sheet",
+        "operation": "read",
+        "documentId": {
+          "__rl": true,
+          "mode": "id",
+          "value": "YOUR_SPREADSHEET_ID",
+          "cachedResultName": "exercicios-espanhol"
+        },
+        "sheetName": {
+          "__rl": true,
+          "mode": "name",
+          "value": "config",
+          "cachedResultName": "config"
+        },
+        "options": {
+          "returnAllMatches": "returnAllMatches"
+        }
+      },
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "CREDENTIAL_ID",
+          "name": "Google Sheets OAuth2"
+        }
+      }
+    },
+    {
+      "id": "81512827-f9fb-4926-b3e6-d1f01f20f008",
+      "name": "Ler exercicios",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        448,
+        0
+      ],
+      "parameters": {
+        "resource": "sheet",
+        "operation": "read",
+        "documentId": {
+          "__rl": true,
+          "mode": "id",
+          "value": "YOUR_SPREADSHEET_ID",
+          "cachedResultName": "exercicios-espanhol"
+        },
+        "sheetName": {
+          "__rl": true,
+          "mode": "name",
+          "value": "exercicios",
+          "cachedResultName": "exercicios"
+        },
+        "options": {
+          "returnAllMatches": "returnAllMatches"
+        }
+      },
+      "executeOnce": true,
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "CREDENTIAL_ID",
+          "name": "Google Sheets OAuth2"
+        }
+      }
+    },
+    {
+      "id": "2aa53dc6-c114-415f-9d68-47dd61d601fe",
+      "name": "Montar mensagem da noite",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        672,
+        0
+      ],
+      "parameters": {
+        "mode": "runOnceForAllItems",
+        "jsCode": "const cfgLinhas = $('Ler config').all();\nconst cfg = {};\nfor (let i = 0; i < cfgLinhas.length; i++) {\n  const l = cfgLinhas[i].json;\n  if (l.chave) cfg[String(l.chave).trim()] = String(l.valor).trim();\n}\n\nif ((cfg.ativo || 'sim').toLowerCase() !== 'sim') return [];\n\nconst agora = new Date();\nconst nomes = ['dom', 'seg', 'ter', 'qua', 'qui', 'sex', 'sab'];\nconst diaHoje = nomes[agora.getDay()];\nif (diaHoje !== 'qua') return [];\n\nconst diaSemana = agora.getDay();\nconst segunda = new Date(agora);\nsegunda.setDate(agora.getDate() + (1 - diaSemana));\nconst semanaHoje = segunda.getFullYear() + '-' + String(segunda.getMonth() + 1).padStart(2, '0') + '-' + String(segunda.getDate()).padStart(2, '0');\n\nconst linhas = $input.all();\nlet alvo = null;\nfor (let i = 0; i < linhas.length; i++) {\n  const r = linhas[i].json;\n  if (String(r.dia || '').trim() !== 'qua') continue;\n  if (String(r.semana || '').trim() !== semanaHoje) continue;\n  if (String(r.status || '').trim().toLowerCase() !== 'enviado') continue;\n  if (!String(r.guion || '').trim()) continue;\n  alvo = r;\n  break;\n}\n\nif (!alvo) return [];\n\nconst nl = String.fromCharCode(10);\nconst mensagem = 'El texto del audio de hoy, por si lo quieres escuchar otra vez siguiendo la lectura.'\n  + nl + nl + String(alvo.guion).trim();\n\nreturn [{ json: { mensagem: mensagem, destino: cfg.destino, instancia: cfg.instancia } }];"
+      }
+    },
+    {
+      "id": "c9eb09d0-d16f-49a5-b017-9f620ddfc1dc",
+      "name": "Enviar mensagem da noite",
+      "type": "n8n-nodes-evolution-api.evolutionApi",
+      "typeVersion": 1,
+      "position": [
+        896,
+        0
+      ],
+      "parameters": {
+        "resource": "messages-api",
+        "operation": "send-text",
+        "instanceName": "={{ $json.instancia }}",
+        "remoteJid": "={{ $json.destino }}",
+        "messageText": "={{ $json.mensagem }}",
+        "options_message": {
+          "delay": 1200
+        }
+      },
+      "retryOnFail": true,
+      "maxTries": 3,
+      "waitBetweenTries": 2000,
+      "credentials": {
+        "evolutionApi": {
+          "id": "CREDENTIAL_ID",
+          "name": "Evolution API"
+        }
+      }
+    }
+  ],
+  "connections": {
+    "Ler config": {
+      "main": [
+        [
+          {
+            "node": "Ler exercicios",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Ler exercicios": {
+      "main": [
+        [
+          {
+            "node": "Montar mensagem da noite",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Montar mensagem da noite": {
+      "main": [
+        [
+          {
+            "node": "Enviar mensagem da noite",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Quarta 20h": {
+      "main": [
+        [
+          {
+            "node": "Ler config",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1",
+    "timezone": "America/Sao_Paulo"
+  },
+  "meta": {
+    "aiBuilderAssisted": true,
+    "builderVariant": "mcp"
+  },
+  "tags": []
+}

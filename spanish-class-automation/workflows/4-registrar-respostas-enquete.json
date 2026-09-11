@@ -1,0 +1,155 @@
+{
+  "name": "4. Registrar respostas da enquete",
+  "nodes": [
+    {
+      "id": "82234dce-26b5-4dff-810e-08b4611f2bd7",
+      "name": "Resposta do aluno",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [
+        0,
+        0
+      ],
+      "parameters": {
+        "httpMethod": "GET",
+        "path": "YOUR_WEBHOOK_PATH",
+        "responseMode": "onReceived",
+        "options": {}
+      },
+      "webhookId": "e7277ab0-54b8-4e39-921a-f2f90686d654"
+    },
+    {
+      "id": "9828e509-21cf-4e68-b4b7-65dbe34b27d4",
+      "name": "Montar linha",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        224,
+        0
+      ],
+      "parameters": {
+        "mode": "runOnceForAllItems",
+        "jsCode": "\nconst q = $input.first().json.query || {};\n\nconst agora = new Date();\nfunction dois(n) { return String(n).padStart(2, '0'); }\nconst momento = agora.getFullYear() + '-' + dois(agora.getMonth() + 1) + '-' + dois(agora.getDate())\n  + ' ' + dois(agora.getHours()) + ':' + dois(agora.getMinutes());\n\nreturn [{ json: {\n  momento: momento,\n  semana: String(q.s || '').slice(0, 20),\n  pergunta: String(q.p || '').slice(0, 5),\n  resposta: String(q.r || '').slice(0, 60),\n  acertou: String(q.ok || '') === '1' ? 'sim' : 'nao'\n} }];\n"
+      }
+    },
+    {
+      "id": "dd031b55-87c0-4647-9783-5b4fefe781c9",
+      "name": "Gravar resposta",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        448,
+        0
+      ],
+      "parameters": {
+        "resource": "sheet",
+        "operation": "append",
+        "documentId": {
+          "__rl": true,
+          "mode": "id",
+          "value": "YOUR_SPREADSHEET_ID",
+          "cachedResultName": "exercicios-espanhol"
+        },
+        "sheetName": {
+          "__rl": true,
+          "mode": "name",
+          "value": "respostas",
+          "cachedResultName": "respostas"
+        },
+        "columns": {
+          "mappingMode": "autoMapInputData",
+          "value": {},
+          "schema": [
+            {
+              "id": "momento",
+              "displayName": "momento",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "semana",
+              "displayName": "semana",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "pergunta",
+              "displayName": "pergunta",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "resposta",
+              "displayName": "resposta",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "acertou",
+              "displayName": "acertou",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            }
+          ]
+        },
+        "options": {
+          "cellFormat": "USER_ENTERED"
+        }
+      },
+      "onError": "continueRegularOutput",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "CREDENTIAL_ID",
+          "name": "Google Sheets OAuth2"
+        }
+      }
+    }
+  ],
+  "connections": {
+    "Resposta do aluno": {
+      "main": [
+        [
+          {
+            "node": "Montar linha",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Montar linha": {
+      "main": [
+        [
+          {
+            "node": "Gravar resposta",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "meta": {
+    "aiBuilderAssisted": true,
+    "builderVariant": "mcp"
+  },
+  "tags": []
+}
