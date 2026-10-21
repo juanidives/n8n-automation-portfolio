@@ -1,0 +1,499 @@
+{
+  "name": "DIO – Assistente de Investimentos",
+  "nodes": [
+    {
+      "parameters": {},
+      "id": "b0b2ad86-64a2-4e72-9b9c-4dff0507485a",
+      "name": "Executar manualmente",
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        0,
+        208
+      ]
+    },
+    {
+      "parameters": {
+        "url": "https://digitalinnovationone.github.io/dio-lab-assistente-investimentos-rpa-n8n/",
+        "options": {
+          "response": {
+            "response": {
+              "responseFormat": "text",
+              "outputPropertyName": "html"
+            }
+          }
+        }
+      },
+      "id": "087cc683-d8da-4d94-8e7e-744a3e6614bc",
+      "name": "RPA: Baixar página de clientes",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.5,
+      "position": [
+        224,
+        304
+      ],
+      "executeOnce": true
+    },
+    {
+      "parameters": {
+        "operation": "extractHtmlContent",
+        "dataPropertyName": "html",
+        "extractionValues": {
+          "values": [
+            {
+              "key": "nome",
+              "cssSelector": "#clientes tbody td.nome",
+              "returnArray": true
+            },
+            {
+              "key": "email",
+              "cssSelector": "#clientes tbody td.email",
+              "returnArray": true
+            },
+            {
+              "key": "saldo",
+              "cssSelector": "#clientes tbody td.saldo",
+              "returnArray": true
+            },
+            {
+              "key": "perfil",
+              "cssSelector": "#clientes tbody td.perfil",
+              "returnArray": true
+            }
+          ]
+        },
+        "options": {
+          "trimValues": true
+        }
+      },
+      "id": "92741e73-bb47-4108-9ee3-c7fd1459ba51",
+      "name": "RPA: Ler tabela de clientes",
+      "type": "n8n-nodes-base.html",
+      "typeVersion": 1.2,
+      "position": [
+        448,
+        304
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "const t = $input.first().json;\nconst paraNumero = (txt) => Number(String(txt).replace(/[^\\d,]/g, '').replace(',', '.'));\n\nreturn t.nome.map((nome, i) => ({\n  json: {\n    nome,\n    email: t.email[i],\n    saldo: t.saldo[i],\n    saldoNumero: paraNumero(t.saldo[i]),\n    perfil: t.perfil[i],\n  },\n}));\n"
+      },
+      "id": "e50b31ec-71eb-4a8f-bbf7-9b0c1179d77b",
+      "name": "RPA: Montar lista de clientes",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        672,
+        304
+      ]
+    },
+    {
+      "parameters": {
+        "url": "https://digitalinnovationone.github.io/dio-lab-assistente-investimentos-rpa-n8n/data.csv",
+        "options": {
+          "response": {
+            "response": {
+              "responseFormat": "file"
+            }
+          }
+        }
+      },
+      "id": "efc32074-c233-493d-a3d1-9b780b4420b5",
+      "name": "Baixar investimentos (data.csv)",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.5,
+      "position": [
+        896,
+        304
+      ],
+      "executeOnce": true
+    },
+    {
+      "parameters": {
+        "options": {
+          "delimiter": ",",
+          "headerRow": true
+        }
+      },
+      "id": "3d6bf5ea-fc63-40c0-8d6e-bbbe02552b94",
+      "name": "Ler CSV de investimentos",
+      "type": "n8n-nodes-base.extractFromFile",
+      "typeVersion": 1.1,
+      "position": [
+        1120,
+        304
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "const produtos = $input.all().map(i => ({\n  perfil: String(i.json.perfil).trim(),\n  produto: i.json.produto,\n  minimo: Number(i.json.minimo),\n  rentabilidade: i.json.rentabilidade,\n}));\nconst clientes = $('RPA: Montar lista de clientes').all().map(i => i.json);\n\nconst brl = (v) => v.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });\n\nconst abertura = {\n  Conservador: 'pensando na segurança do seu patrimônio, separamos opções de renda fixa com baixo risco e boa liquidez',\n  Moderado: 'para equilibrar segurança e crescimento, separamos um mix entre renda fixa e opções com mais potencial de retorno',\n  Arrojado: 'para buscar maior potencial de retorno no longo prazo, separamos opções de renda variável',\n};\n\nreturn clientes.map(c => {\n  const doPerfil = produtos.filter(p => p.perfil === c.perfil);\n  const elegiveis = doPerfil.filter(p => p.minimo <= c.saldoNumero);\n  const lista = elegiveis\n    .map(p => `- ${p.produto} (aporte mínimo ${brl(p.minimo)}, rentabilidade ${p.rentabilidade})`)\n    .join('\\n');\n  const primeiroNome = c.nome.split(' ')[0];\n\n  const mensagemEstatica = elegiveis.length\n    ? `Olá, ${primeiroNome}! Como seu perfil é ${c.perfil}, ${abertura[c.perfil] ?? 'separamos algumas opções'}:\\n${lista}\\nQuer conversar sobre qual faz mais sentido para você?`\n    : `Olá, ${primeiroNome}! Ainda não temos opções do perfil ${c.perfil} com aporte mínimo dentro do seu saldo atual. Que tal conversarmos sobre um plano para chegar lá?`;\n\n  return {\n    json: {\n      ...c,\n      produtosDoPerfil: doPerfil,\n      produtosElegiveis: elegiveis,\n      listaProdutos: lista || 'nenhum produto elegível para o saldo atual',\n      mensagemEstatica,\n    },\n  };\n});\n"
+      },
+      "id": "93ab361b-deec-454c-88ae-4e5b40792e7f",
+      "name": "Cruzar clientes x investimentos",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1344,
+        304
+      ]
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=Cliente: {{ $json.nome }}\nPerfil de investidor: {{ $json.perfil }}\nSaldo disponível: {{ $json.saldo }}\nOpções compatíveis com o perfil e o saldo:\n{{ $json.listaProdutos }}\n\nEscreva a mensagem para este cliente.",
+        "messages": {
+          "messageValues": [
+            {
+              "message": "Você é um assessor de investimentos de um banco brasileiro e escreve mensagens curtas para WhatsApp/e-mail. Regras: português do Brasil, tom cordial e humano, no máximo 90 palavras. Chame o cliente pelo primeiro nome. Recomende apenas produtos da lista recebida, explicando em uma frase por que combinam com o perfil e o saldo. Se a lista estiver vazia, sugira com gentileza um próximo passo para começar a investir. Nunca prometa rentabilidade futura nem invente produtos ou números. Termine convidando para uma conversa."
+            }
+          ]
+        },
+        "batching": {}
+      },
+      "id": "88a14453-2082-4a0e-a11b-1857358b1cf3",
+      "name": "IA: Gerar mensagem personalizada",
+      "type": "@n8n/n8n-nodes-langchain.chainLlm",
+      "typeVersion": 1.9,
+      "position": [
+        1568,
+        304
+      ]
+    },
+    {
+      "parameters": {
+        "model": {
+          "__rl": true,
+          "mode": "list",
+          "value": "gpt-4o-mini",
+          "cachedResultName": "gpt-4o-mini"
+        },
+        "builtInTools": {},
+        "options": {
+          "maxTokens": 400,
+          "temperature": 0.7
+        }
+      },
+      "id": "b5b548ae-14dd-456c-9a3e-60b287b18c33",
+      "name": "OpenAI (gpt-4o-mini)",
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+      "typeVersion": 1.3,
+      "position": [
+        1648,
+        544
+      ],
+      "credentials": {
+        "openAiApi": {
+          "id": "CREDENTIAL_ID",
+          "name": "OpenAI API"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "nome",
+              "name": "nome",
+              "value": "={{ $('Cruzar clientes x investimentos').item.json.nome }}",
+              "type": "string"
+            },
+            {
+              "id": "email",
+              "name": "email",
+              "value": "={{ $('Cruzar clientes x investimentos').item.json.email }}",
+              "type": "string"
+            },
+            {
+              "id": "perfil",
+              "name": "perfil",
+              "value": "={{ $('Cruzar clientes x investimentos').item.json.perfil }}",
+              "type": "string"
+            },
+            {
+              "id": "saldo",
+              "name": "saldo",
+              "value": "={{ $('Cruzar clientes x investimentos').item.json.saldo }}",
+              "type": "string"
+            },
+            {
+              "id": "produtos",
+              "name": "produtosRecomendados",
+              "value": "={{ $('Cruzar clientes x investimentos').item.json.produtosElegiveis.map(p => p.produto) }}",
+              "type": "array"
+            },
+            {
+              "id": "msg-estatica",
+              "name": "mensagemEstatica",
+              "value": "={{ $('Cruzar clientes x investimentos').item.json.mensagemEstatica }}",
+              "type": "string"
+            },
+            {
+              "id": "msg-ia",
+              "name": "mensagemIA",
+              "value": "={{ $json.text }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "14bd290e-8c85-480e-be1b-cd30b2c6bc9a",
+      "name": "Mensagens personalizadas",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.5,
+      "position": [
+        1920,
+        304
+      ]
+    },
+    {
+      "parameters": {
+        "path": "YOUR_WEBHOOK_PATH",
+        "responseMode": "lastNode",
+        "responseData": "allEntries",
+        "options": {}
+      },
+      "id": "6f176ad9-2580-47e0-810b-186c5024e25b",
+      "name": "Webhook (GET)",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2.1,
+      "position": [
+        0,
+        400
+      ],
+      "webhookId": "0e0df97c-201a-4524-8bee-3276a9e7e3b9"
+    },
+    {
+      "parameters": {
+        "content": "## 1. RPA dentro do n8n\nSubstitui o notebook do Colab: baixa a página de clientes (requests) e lê a tabela com seletores CSS (BeautifulSoup → nó HTML).",
+        "height": 392,
+        "width": 676,
+        "color": 4
+      },
+      "id": "f629d56f-eb77-49b2-84ca-c3fdfe9eecec",
+      "name": "Sticky Note 72f05ae5",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        144,
+        160
+      ]
+    },
+    {
+      "parameters": {
+        "content": "## 2. Cruzar dados\nLê o data.csv e cruza perfil + saldo do cliente com o aporte mínimo de cada produto. Gera também a mensagem estática (MVP).",
+        "height": 392,
+        "width": 660,
+        "color": 5
+      },
+      "id": "3eb3d5f1-634f-44ea-ace4-7a62606a3356",
+      "name": "Sticky Note 9212b320",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        832,
+        160
+      ]
+    },
+    {
+      "parameters": {
+        "content": "## 3. Desafio: IA generativa\nO LLM recebe só os produtos elegíveis e escreve uma mensagem única por cliente. A saída traz a versão estática e a da IA lado a lado.",
+        "height": 552,
+        "width": 600,
+        "color": 6
+      },
+      "id": "bdef4983-78a9-41dd-95e5-ba146b5e38d1",
+      "name": "Sticky Note 453054ae",
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        1504,
+        160
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "const esc = (s) => String(s ?? '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');\nconst br = (s) => esc(s).replace(/\\n/g, '<br>');\nconst itens = $input.all().map(i => i.json);\nconst cor = { Conservador: '#1E88E5', Moderado: '#FB8C00', Arrojado: '#D81B60' };\n\nconst linhas = itens.map(c => `\n  <tr>\n    <td style=\"padding:10px;border-bottom:1px solid #eee;vertical-align:top\"><strong>${esc(c.nome)}</strong><br><span style=\"color:#777;font-size:12px\">${esc(c.email)}</span></td>\n    <td style=\"padding:10px;border-bottom:1px solid #eee;vertical-align:top\"><span style=\"color:${cor[c.perfil] || '#555'};font-weight:bold\">${esc(c.perfil)}</span><br>${esc(c.saldo)}</td>\n    <td style=\"padding:10px;border-bottom:1px solid #eee;vertical-align:top\">${esc((c.produtosRecomendados || []).join(', ') || '—')}</td>\n    <td style=\"padding:10px;border-bottom:1px solid #eee;vertical-align:top;font-size:13px\">${br(c.mensagemIA)}</td>\n  </tr>`).join('');\n\nconst html = `\n<div style=\"font-family:Arial,sans-serif;color:#222;max-width:900px\">\n  <h2 style=\"margin-bottom:4px\">Assistente de Investimentos — recomendações do dia</h2>\n  <p style=\"color:#666;margin-top:0\">${itens.length} clientes processados em ${$now.setZone('America/Sao_Paulo').toFormat('dd/MM/yyyy HH:mm')}. Dados fictícios do lab DIO.</p>\n  <table style=\"border-collapse:collapse;width:100%\">\n    <thead><tr style=\"background:#f5f5f5;text-align:left\">\n      <th style=\"padding:10px\">Cliente</th><th style=\"padding:10px\">Perfil / Saldo</th><th style=\"padding:10px\">Produtos elegíveis</th><th style=\"padding:10px\">Mensagem (IA)</th>\n    </tr></thead>\n    <tbody>${linhas}</tbody>\n  </table>\n</div>`;\n\nreturn [{ json: { assunto: `Recomendações de investimento — ${itens.length} clientes`, html, total: itens.length } }];\n"
+      },
+      "id": "dea89fe4-bc3d-4360-a158-a4c81291f5de",
+      "name": "Montar e-mail resumo",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        2384,
+        304
+      ]
+    },
+    {
+      "parameters": {
+        "sendTo": "YOUR_EMAIL",
+        "subject": "={{ $json.assunto }}",
+        "message": "={{ $json.html }}",
+        "options": {
+          "appendAttribution": false,
+          "senderName": "Assistente de Investimentos"
+        }
+      },
+      "id": "d5d256d4-edc9-4e3e-bd8e-8930b9ca2d7c",
+      "name": "Enviar resumo por e-mail",
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.2,
+      "position": [
+        2640,
+        304
+      ],
+      "webhookId": "6db3ba57-437a-41e8-86ff-f2a41386eec0",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "CREDENTIAL_ID",
+          "name": "Gmail OAuth2"
+        }
+      }
+    }
+  ],
+  "connections": {
+    "Executar manualmente": {
+      "main": [
+        [
+          {
+            "node": "RPA: Baixar página de clientes",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "RPA: Baixar página de clientes": {
+      "main": [
+        [
+          {
+            "node": "RPA: Ler tabela de clientes",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "RPA: Ler tabela de clientes": {
+      "main": [
+        [
+          {
+            "node": "RPA: Montar lista de clientes",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "RPA: Montar lista de clientes": {
+      "main": [
+        [
+          {
+            "node": "Baixar investimentos (data.csv)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Baixar investimentos (data.csv)": {
+      "main": [
+        [
+          {
+            "node": "Ler CSV de investimentos",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Ler CSV de investimentos": {
+      "main": [
+        [
+          {
+            "node": "Cruzar clientes x investimentos",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Cruzar clientes x investimentos": {
+      "main": [
+        [
+          {
+            "node": "IA: Gerar mensagem personalizada",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "IA: Gerar mensagem personalizada": {
+      "main": [
+        [
+          {
+            "node": "Mensagens personalizadas",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenAI (gpt-4o-mini)": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "IA: Gerar mensagem personalizada",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Webhook (GET)": {
+      "main": [
+        [
+          {
+            "node": "RPA: Baixar página de clientes",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Mensagens personalizadas": {
+      "main": [
+        [
+          {
+            "node": "Montar e-mail resumo",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Montar e-mail resumo": {
+      "main": [
+        [
+          {
+            "node": "Enviar resumo por e-mail",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate"
+  },
+  "meta": {
+    "aiBuilderAssisted": true,
+    "builderVariant": "mcp"
+  },
+  "tags": []
+}

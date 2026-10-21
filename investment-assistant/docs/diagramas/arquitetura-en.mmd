@@ -1,0 +1,23 @@
+flowchart TB
+  subgraph E1["Stage 1 · RPA inside n8n"]
+    direction LR
+    T(["Trigger<br/>manual or webhook"]):::wf --> P["Customer page<br/>GitHub Pages"]:::data
+    P --> X["HTML Extract<br/>CSS selectors"]:::data
+    X --> C["10 customers<br/>balance as number"]:::data
+  end
+  subgraph E2["Stage 2 · Matching"]
+    direction LR
+    CSV["data.csv<br/>9 products"]:::data --> R{"same profile and<br/>minimum ≤ balance"}
+    R --> ST["Static message<br/>from template"]:::msg
+  end
+  subgraph E3["Stage 3 · Generative AI and delivery"]
+    direction LR
+    LLM["gpt-4o-mini<br/>eligible products only"]:::ai --> M["Unique message<br/>per customer"]:::ai
+    M --> EM["Summary e-mail<br/>Gmail · operator"]:::msg
+  end
+  E1 --> E2
+  E2 --> E3
+  classDef wf fill:#e8f1ff,stroke:#3b6fd8,color:#1b2b4a
+  classDef ai fill:#f3e8ff,stroke:#8a4fd8,color:#2e1a47
+  classDef msg fill:#e7f7ec,stroke:#2f9a57,color:#12331f
+  classDef data fill:#fff5e0,stroke:#d49a1f,color:#3d2c08

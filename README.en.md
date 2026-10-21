@@ -5,9 +5,9 @@
 <p align="center">
   <a href="LICENSE"><img src="https://img.shields.io/badge/License-MIT-yellow.svg" alt="License: MIT"/></a>
   <img src="https://img.shields.io/badge/n8n-2.x_self--hosted-051221?style=flat&logo=n8n&logoColor=EA4B71" alt="n8n 2.x self-hosted"/>
-  <img src="https://img.shields.io/badge/cases-2-051221?style=flat" alt="2 cases"/>
-  <img src="https://img.shields.io/badge/workflows-5-051221?style=flat" alt="5 workflows"/>
-  <img src="https://img.shields.io/badge/nodes-61-051221?style=flat" alt="61 nodes"/>
+  <img src="https://img.shields.io/badge/cases-3-051221?style=flat" alt="3 cases"/>
+  <img src="https://img.shields.io/badge/workflows-6-051221?style=flat" alt="6 workflows"/>
+  <img src="https://img.shields.io/badge/nodes-74-051221?style=flat" alt="74 nodes"/>
   <img src="https://img.shields.io/badge/docs-PT_%7C_EN-051221?style=flat" alt="Docs PT | EN"/>
 </p>
 
@@ -61,6 +61,23 @@ As a Data Project Manager, I bring to automation the same lens I used leading Da
       <p><a href="ugc-video-factory/README.en.md"><b>Read the case →</b></a> &nbsp;·&nbsp; <a href="ugc-video-factory/README.md">Português</a> &nbsp;·&nbsp; <a href="ugc-video-factory/workflows/">JSON</a></p>
     </td>
   </tr>
+  <tr>
+    <td width="50%" valign="top">
+      <a href="investment-assistant/README.en.md">
+        <img src="investment-assistant/docs/canvas-assistente-investimentos.png" alt="n8n canvas of the Investment Assistant"/>
+      </a>
+      <h3>💹 Investment Assistant</h3>
+      <p>An RPA robot reads the customer book from a web page, a rule matches profile and balance against the product shelf, and AI writes a recommendation for each customer, delivered to the operator in a summary e-mail.</p>
+      <p><b>1 workflow · 13 nodes · training project (DIO)</b></p>
+      <p>
+        <img src="https://img.shields.io/badge/RPA-HTML_Extract-051221?style=flat" alt="RPA"/>
+        <img src="https://img.shields.io/badge/OpenAI-gpt--4o--mini-051221?style=flat&logo=openai" alt="OpenAI"/>
+        <img src="https://img.shields.io/badge/Gmail-051221?style=flat&logo=gmail" alt="Gmail"/>
+        <img src="https://img.shields.io/badge/GitHub_Pages-051221?style=flat&logo=githubpages" alt="GitHub Pages"/>
+      </p>
+      <p><a href="investment-assistant/README.en.md"><b>Read the case →</b></a> &nbsp;·&nbsp; <a href="investment-assistant/README.md">Português</a> &nbsp;·&nbsp; <a href="investment-assistant/workflows/">JSON</a></p>
+    </td>
+  </tr>
 </table>
 
 ---
@@ -69,14 +86,15 @@ As a Data Project Manager, I bring to automation the same lens I used leading Da
 
 | Skill | Where it shows |
 |---|---|
-| **Human-in-the-loop AI** | AI generates the week and the teacher approves it in the spreadsheet; delivery picks up only approved rows · *Spanish* |
-| **Prompt engineering** | Explicit rules, counter-examples, JSON output and Structured Output Parser · *Spanish, UGC* |
+| **Human-in-the-loop AI** | AI generates the week and the teacher approves it in the spreadsheet; delivery picks up only approved rows · *Spanish*. AI writes and the operator reviews the summary before any customer contact · *Investments* |
+| **Prompt engineering** | Explicit rules, counter-examples, JSON output and Structured Output Parser · *Spanish, UGC*. Grounding on eligible products and compliance rules · *Investments* |
 | **Multimodal orchestration** | Vision, text, image, video and audio in the same flow · *UGC, Spanish* |
-| **API integration** | Google Drive and Sheets, WhatsApp, Telegram, GitHub, ElevenLabs and Fal.ai · *both* |
+| **API integration** | Google Drive and Sheets, WhatsApp, Telegram, GitHub, ElevenLabs, Fal.ai and Gmail · *all* |
 | **Async patterns** | Queue → status check → fetch result, with controlled waits · *UGC, Spanish* |
+| **RPA and business rules** | CSS-selector collection with no API and recommendations filtered by profile and balance in code · *Investments* |
 | **Privacy-aware data** | Anonymous answers become a per-question, per-week accuracy base · *Spanish* |
 | **Operations** | Retries, explicit timezone, a global pause switch and WhatsApp error alerts · *Spanish* |
-| **Governance and documentation** | Sanitized JSON, sanitization log, diagrams generated from the connections · *both* |
+| **Governance and documentation** | Sanitized JSON, sanitization log, diagrams generated from the connections · *all* |
 
 ---
 
@@ -86,6 +104,7 @@ As a Data Project Manager, I bring to automation the same lens I used leading Da
 [![OpenAI](https://img.shields.io/badge/OpenAI-051221?style=flat&logo=openai)](https://openai.com)
 [![Google Sheets](https://img.shields.io/badge/Google_Sheets-051221?style=flat&logo=googlesheets)](https://workspace.google.com/products/sheets/)
 [![Google Drive](https://img.shields.io/badge/Google_Drive-051221?style=flat&logo=googledrive)](https://workspace.google.com/products/drive/)
+[![Gmail](https://img.shields.io/badge/Gmail-051221?style=flat&logo=gmail)](https://workspace.google.com/products/gmail/)
 [![WhatsApp](https://img.shields.io/badge/WhatsApp_%28Evolution_API%29-051221?style=flat&logo=whatsapp)](https://github.com/EvolutionAPI/evolution-api)
 [![Telegram](https://img.shields.io/badge/Telegram-051221?style=flat&logo=telegram)](https://core.telegram.org/bots)
 [![ElevenLabs](https://img.shields.io/badge/ElevenLabs-051221?style=flat&logo=elevenlabs)](https://elevenlabs.io)
@@ -112,7 +131,8 @@ n8n-automation-portfolio/
 │       ├── diagramas/              ← Mermaid diagrams (.mmd + .png)
 │       └── diagramas-workflows.md  ← node-level diagram of each workflow
 │
-└── ugc-video-factory/              ← same structure
+├── ugc-video-factory/              ← same structure
+└── investment-assistant/           ← same structure
 ```
 
 ---
