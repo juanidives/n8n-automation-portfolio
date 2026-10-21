@@ -6,6 +6,8 @@
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](../LICENSE) ![n8n](https://img.shields.io/badge/n8n-2.x-051221?style=flat&logo=n8n) ![RPA](https://img.shields.io/badge/RPA-HTML_Extract-051221?style=flat) ![OpenAI](https://img.shields.io/badge/OpenAI-gpt--4o--mini-051221?style=flat&logo=openai) ![Gmail](https://img.shields.io/badge/Gmail-051221?style=flat&logo=gmail) ![GitHub Pages](https://img.shields.io/badge/GitHub_Pages-051221?style=flat&logo=githubpages)
 
+> Projeto desenvolvido para o Desafio de Projeto da [DIO](https://www.dio.me/) — *Criando um Assistente de Investimentos com RPA e IA Generativa*, entregue na versão desafio completo: MVP com mensagens estáticas e integração com LLM.
+
 ---
 
 ## O problema
